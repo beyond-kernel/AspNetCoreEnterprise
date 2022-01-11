@@ -2,11 +2,23 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using NSE.Identidade.API.Configuration;
 using NSE.Identidade.API.Data;
 using NSE.Identidade.API.Extensions;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration.SetBasePath(builder.Environment.ContentRootPath)
+    .AddJsonFile("appsettings.json", true, true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", true, true)
+    .AddEnvironmentVariables();
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Configuration.AddUserSecrets<Program>();
+}
+
 
 builder.Services.AddDbContext<ApplicationDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -42,7 +54,7 @@ builder.Services.AddAuthentication(opt =>
     };
 });
 
-builder.Services.AddControllers();
+builder.Services.AddApiConfiguration();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
@@ -63,14 +75,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1"); });
 }
 
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.UseAuthentication();
+app.UseApiConfiguration(app.Environment);
 
 app.MapControllers();
 
 app.Run();
-
-app.UseRouting();
