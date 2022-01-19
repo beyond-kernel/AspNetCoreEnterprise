@@ -101,7 +101,7 @@ namespace NSE.WebApp.MVC.Controllers
                 authProperties);
         }
 
-        private static JwtSecurityToken ObterTokenFormatado(string jwtToken)
+        private static JwtSecurityToken? ObterTokenFormatado(string jwtToken)
         {
 
             return new JwtSecurityTokenHandler().ReadToken(jwtToken) as JwtSecurityToken; 
