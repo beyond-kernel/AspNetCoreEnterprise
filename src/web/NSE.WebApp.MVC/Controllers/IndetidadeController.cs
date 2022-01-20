@@ -10,7 +10,7 @@ namespace NSE.WebApp.MVC.Controllers
 {
     [ApiController]
     [Route("Identidade")]
-    public class IndetidadeController : Controller
+    public class IndetidadeController : MainController
     {
         private readonly IAutenticacaoService _autenticacaoService;
 
@@ -37,7 +37,7 @@ namespace NSE.WebApp.MVC.Controllers
             var resposta = await _autenticacaoService.Registro(usuarioRegistro);
 
 
-            //if (false) return View(usuarioRegistro);
+            if (ResponsePossuiErros(resposta.ResponseResult)) return View(usuarioRegistro);
 
             //Realizar Login
 
@@ -64,7 +64,7 @@ namespace NSE.WebApp.MVC.Controllers
 
             var resposta = await _autenticacaoService.Login(usuarioLogin);
 
-            //if (false) return View(usuarioLogin);
+            if (ResponsePossuiErros(resposta.ResponseResult)) return View(usuarioLogin);
 
             //Realizar Login
 
@@ -95,7 +95,7 @@ namespace NSE.WebApp.MVC.Controllers
                 ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(60),
                 IsPersistent = true
             };
-         
+
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                 new System.Security.Claims.ClaimsPrincipal(claimsIdentity),
                 authProperties);
@@ -104,7 +104,7 @@ namespace NSE.WebApp.MVC.Controllers
         private static JwtSecurityToken? ObterTokenFormatado(string jwtToken)
         {
 
-            return new JwtSecurityTokenHandler().ReadToken(jwtToken) as JwtSecurityToken; 
+            return new JwtSecurityTokenHandler().ReadToken(jwtToken) as JwtSecurityToken;
         }
     }
 }
