@@ -4,6 +4,7 @@ using NSE.Catalogo.API.Configuration;
 using NSE.Catalogo.API.Data;
 using NSE.Catalogo.API.Data.Repository;
 using NSE.Catalogo.API.Models;
+using NSE.WebAPI.Core.Identidade;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,9 +28,9 @@ builder.Services.AddControllers();
 
 builder.Services.AddApiConfiguration();
 
-builder.Services.AddCors(opt => { opt.AddPolicy("Total", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()); });
+builder.Services.AddJwtConfiguration(builder.Configuration);
 
-builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddCors(opt => { opt.AddPolicy("Total", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()); });
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -55,8 +56,6 @@ if (app.Environment.IsDevelopment())
 app.UseApiConfiguration(app.Environment);
 
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 

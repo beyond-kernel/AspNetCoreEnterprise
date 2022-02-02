@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using NSE.Identidade.API.Configuration;
 using NSE.Identidade.API.Data;
-using NSE.Identidade.API.Extensions;
+using NSE.WebAPI.Core.Identidade;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,31 +28,33 @@ builder.Services.AddDefaultIdentity<IdentityUser>()
     .AddDefaultTokenProviders();
 
 
-var appSettingsSection = builder.Configuration.GetSection("AppSettings");
-builder.Services.Configure<AppSettings>(appSettingsSection);
+builder.Services.AddJwtConfiguration(builder.Configuration);
 
-var appSettings = appSettingsSection.Get<AppSettings>();
-var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+//var appSettingsSection = builder.Configuration.GetSection("AppSettings");
+//builder.Services.Configure<AppSettings>(appSettingsSection);
 
-//configuracao JWT
-builder.Services.AddAuthentication(opt =>
-{
-    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(bearerOpt =>
-{
-    bearerOpt.RequireHttpsMetadata = true;
-    bearerOpt.SaveToken = true;
-    bearerOpt.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-    {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidAudience = appSettings.ValidoEm,
-        ValidIssuer = appSettings.Emissor
-    };
-});
+//var appSettings = appSettingsSection.Get<AppSettings>();
+//var key = Encoding.ASCII.GetBytes(appSettings.Secret);
+
+////configuracao JWT
+//builder.Services.AddAuthentication(opt =>
+//{
+//    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//}).AddJwtBearer(bearerOpt =>
+//{
+//    bearerOpt.RequireHttpsMetadata = true;
+//    bearerOpt.SaveToken = true;
+//    bearerOpt.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+//    {
+//        ValidateIssuerSigningKey = true,
+//        IssuerSigningKey = new SymmetricSecurityKey(key),
+//        ValidateIssuer = true,
+//        ValidateAudience = true,
+//        ValidAudience = appSettings.ValidoEm,
+//        ValidIssuer = appSettings.Emissor
+//    };
+//});
 
 builder.Services.AddApiConfiguration();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -76,6 +78,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseApiConfiguration(app.Environment);
+
+app.UseAuthConfiguration();
 
 app.MapControllers();
 
