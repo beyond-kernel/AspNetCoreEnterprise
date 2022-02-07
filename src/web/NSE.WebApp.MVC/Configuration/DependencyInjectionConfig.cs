@@ -25,13 +25,13 @@ namespace NSE.WebApp.MVC.Configuration
                 Console.ForegroundColor = ConsoleColor.Blue;
                 Console.WriteLine($"Tentando pela  {retryCount} vez");
                 Console.ForegroundColor = ConsoleColor.White;
-            });
+            }); //utilizando Polly para politica de retry para resiliencia do app
 
             services.AddHttpClient<ICatalogoService, CatalogoService>()
                 .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
                 //.AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, _ => TimeSpan.FromSeconds(600)));
-                .AddPolicyHandler(htttpPolicyExtensions);
-
+                .AddPolicyHandler(htttpPolicyExtensions).AddTransientHttpErrorPolicy(p => (IAsyncPolicy<HttpResponseMessage>)p.CircuitBreaker(5, TimeSpan.FromSeconds(30)));
+            //implementando circuit breaker para apos muitas falhas parar requisicoes 
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
