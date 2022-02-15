@@ -5,6 +5,7 @@ using NSE.Catalogo.API.Data;
 using NSE.Catalogo.API.Data.Repository;
 using NSE.Catalogo.API.Models;
 using NSE.WebAPI.Core.Identidade;
+using NSE.Catalogo.API;
 
 var builder = WebApplication.CreateBuilder(args);
 
