@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using NSE.Cliente.API.Application.Commands;
+using NSE.Cliente.API.Application.Events;
 using NSE.Cliente.API.Configuration;
 using NSE.Clientes.API.Data;
 using NSE.Clientes.API.Data.Repository;
@@ -45,6 +46,8 @@ builder.Services.AddMediatR(typeof(Program));
 builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();
 builder.Services.AddScoped<IRequestHandler<RegistrarClienteCommand, ValidationResult>, ClienteCommandHandler>();
                             //RegistrarClienteCommand que vai ser entregue via IRequestHandler e que retorna um ValidationResult vai ser manipulado por ClienteCommandHandler
+
+builder.Services.AddScoped<INotificationHandler<ClienteRegistradoEvent>, ClienteEventHandler>();
 
 builder.Services.AddSwaggerGen(c =>
 {

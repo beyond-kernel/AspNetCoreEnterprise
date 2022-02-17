@@ -22,9 +22,9 @@ namespace NSE.Clientes.API.Data.Repository
             return await _context.Clientes.AsNoTracking().ToListAsync();
         }
 
-        public Task<NSE.Clientes.API.Models.Cliente> ObterPorCpf(string cpf)
+        public async Task<NSE.Clientes.API.Models.Cliente> ObterPorCpf(string cpf)
         {
-            return _context.Clientes.FirstOrDefaultAsync(c => c.Cpf.Numero == cpf);
+            return await _context.Clientes.FirstOrDefaultAsync(c => c.Cpf.Numero == cpf);
         }
 
         public void Adicionar(NSE.Clientes.API.Models.Cliente cliente)

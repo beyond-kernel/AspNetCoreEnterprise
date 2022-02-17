@@ -1,5 +1,6 @@
 ﻿using FluentValidation.Results;
 using MediatR;
+using NSE.Cliente.API.Application.Events;
 using NSE.Clientes.API.Models;
 using NSE.Core.Messages;
 using c = NSE.Clientes.API.Models;
@@ -23,7 +24,7 @@ namespace NSE.Cliente.API.Application.Commands
 
             var cliente = new c.Cliente(message.Id, message.Nome, message.Email, message.Cpf);
 
-            var clienteExiste = _clienteRepository.ObterPorCpf(cliente.Cpf.Numero);
+            var clienteExiste = await _clienteRepository.ObterPorCpf(cliente.Cpf.Numero);
 
             if (clienteExiste != null)
             {
@@ -32,6 +33,8 @@ namespace NSE.Cliente.API.Application.Commands
             }
 
             _clienteRepository.Adicionar(cliente);
+
+            cliente.AdicionarEvento(new ClienteRegistradoEvent(message.Id, message.Nome, message.Email, message.Cpf));
 
             return await PersistirDados(_clienteRepository.UnitOfWork);
         }
