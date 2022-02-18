@@ -11,8 +11,19 @@
             <form method="post">
                 <h4>Registre-se e comece a comprar hoje mesmo</h4>
                 <hr />
-                
+
                 <vc:Summary></vc:Summary>
+                <div class="form-group">
+                    <label asp-for="Nome"></label>
+                    <input asp-for="Nome" class="form-control" />
+                    <span asp-validation-for="Nome" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Cpf"></label>
+                    <input asp-for="Cpf" class="form-control" />
+                    <span asp-validation-for="Cpf" class="text-danger"></span>
+                </div>
 
                 <div class="form-group">
                     <label asp-for="Email"></label>
@@ -40,5 +51,5 @@
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+<partial name="_ValidationScriptsPartial" />
 }

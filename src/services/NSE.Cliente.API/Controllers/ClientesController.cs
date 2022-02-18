@@ -1,24 +1,29 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using NSE.Cliente.API.Application.Commands;
 using NSE.Clientes.API.Models;
+using NSE.Core.Mediator;
+using NSE.WebAPI.Core.Controllers;
 
 namespace NSE.Clientes.API.Controllers
 {
-    public class ClientesController : Controller
+    public class ClientesController : MainController
     {
 
-        private readonly IClienteRepository _clienteRepository;
+        private readonly IMediatorHandler _mediatorHandler;
 
-        public ClientesController(IClienteRepository clienteRepository)
+        public ClientesController(IMediatorHandler mediatorHandler)
         {
-            _clienteRepository = clienteRepository;
+            _mediatorHandler = mediatorHandler;
         }
 
         [HttpGet("clientes")]
-        public async Task<IEnumerable<NSE.Clientes.API.Models.Cliente>> Index()
+        public async Task<IActionResult> Index()
         {
-            return await _clienteRepository.ObterTodos();
+            var result = await _mediatorHandler.EnviarComando(new RegistrarClienteCommand(Guid.NewGuid(), "Obi-Wan", "obi-wan@gmail.com", "27513110085"));
+
+            return CustomResponse(result);
         }
     }
 }

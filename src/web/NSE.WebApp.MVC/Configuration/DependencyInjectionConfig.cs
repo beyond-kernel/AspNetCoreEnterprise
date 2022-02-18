@@ -1,4 +1,5 @@
-﻿using NSE.WebApp.MVC.Extensions;
+﻿using Microsoft.AspNetCore.Mvc.DataAnnotations;
+using NSE.WebApp.MVC.Extensions;
 using NSE.WebApp.MVC.Services;
 using NSE.WebApp.MVC.Services.Handlers;
 using Polly;
@@ -14,6 +15,8 @@ namespace NSE.WebApp.MVC.Configuration
             services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
 
             services.AddHttpClient<IAutenticacaoService, AutenticacaoService>();
+
+            services.AddSingleton<IValidationAttributeAdapterProvider, CpfValidationAttributeAdapterProvider>();
 
             var htttpPolicyExtensions = HttpPolicyExtensions.HandleTransientHttpError().WaitAndRetryAsync(new[]
             {
