@@ -40,7 +40,7 @@ builder.Services.AddApiConfiguration();
 builder.Services.AddJwtConfiguration(builder.Configuration);
 
 builder.Services.AddCors(opt => { opt.AddPolicy("Total", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()); });
-
+ 
 builder.Services.AddMediatR(typeof(Program));
 
 builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();
