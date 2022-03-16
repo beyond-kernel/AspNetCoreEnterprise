@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6FA953FC-536F-4467-AA89-493393F5E344}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Building Blocks", "Building Blocks", "{523A7C9C-CE14-476C-BFD7-DE9A44DABAA1}"
+	ProjectSection(SolutionItems) = preProject
+		Docker_RabbitMQ_CMD.txt = Docker_RabbitMQ_CMD.txt
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{DA63D568-F132-4C3C-ABBF-15E3C27CC925}"
 EndProject
