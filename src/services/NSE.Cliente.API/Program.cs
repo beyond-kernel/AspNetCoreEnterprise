@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using NSE.Cliente.API.Application.Commands;
 using NSE.Cliente.API.Application.Events;
 using NSE.Cliente.API.Configuration;
+using NSE.Cliente.API.Services;
 using NSE.Clientes.API.Data;
 using NSE.Clientes.API.Data.Repository;
 using NSE.Clientes.API.Models;
@@ -40,12 +41,15 @@ builder.Services.AddApiConfiguration();
 builder.Services.AddJwtConfiguration(builder.Configuration);
 
 builder.Services.AddCors(opt => { opt.AddPolicy("Total", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()); });
- 
+
 builder.Services.AddMediatR(typeof(Program));
 
 builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();
+
+//RegistrarClienteCommand que vai ser entregue via IRequestHandler e que retorna um ValidationResult vai ser manipulado por ClienteCommandHandler
 builder.Services.AddScoped<IRequestHandler<RegistrarClienteCommand, ValidationResult>, ClienteCommandHandler>();
-                            //RegistrarClienteCommand que vai ser entregue via IRequestHandler e que retorna um ValidationResult vai ser manipulado por ClienteCommandHandler
+
+builder.Services.AddHostedService<RegistroClienteIntegrationHandler>();
 
 builder.Services.AddScoped<INotificationHandler<ClienteRegistradoEvent>, ClienteEventHandler>();
 
