@@ -10,6 +10,7 @@ using NSE.Clientes.API.Data;
 using NSE.Clientes.API.Data.Repository;
 using NSE.Clientes.API.Models;
 using NSE.Core.Mediator;
+using NSE.MessageBus;
 using NSE.WebAPI.Core.Identidade;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,6 +53,8 @@ builder.Services.AddScoped<IRequestHandler<RegistrarClienteCommand, ValidationRe
 builder.Services.AddHostedService<RegistroClienteIntegrationHandler>();
 
 builder.Services.AddScoped<INotificationHandler<ClienteRegistradoEvent>, ClienteEventHandler>();
+
+builder.Services.AddMessageBus(builder.Configuration.GetConnectionString("MessageQueueConnection"));
 
 builder.Services.AddSwaggerGen(c =>
 {

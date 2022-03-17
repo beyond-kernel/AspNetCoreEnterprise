@@ -70,7 +70,7 @@ namespace NSE.Identidade.API.Controllers
 
             try
             {
-                _bus = RabbitHutch.CreateBus("localhost:5672");
+                _bus = RabbitHutch.CreateBus("amqp://guest:guest@rabbit-host:5672/%2ffilestream");
 
                 return await _bus.Rpc.RequestAsync<UsuarioRegistradoIntegrationEvent, ResponseMessage>(usuarioRegistrado);
             }

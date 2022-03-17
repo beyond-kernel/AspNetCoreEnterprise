@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using NSE.Identidade.API.Configuration;
 using NSE.Identidade.API.Data;
+using NSE.MessageBus;
 using NSE.WebAPI.Core.Identidade;
 using System.Text;
 
@@ -59,6 +60,9 @@ builder.Services.AddJwtConfiguration(builder.Configuration);
 builder.Services.AddApiConfiguration();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
+
+builder.Services.AddMessageBus(builder.Configuration.GetConnectionString("MessageQueueConnection"));
 
 builder.Services.AddSwaggerGen(c => c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
 {
