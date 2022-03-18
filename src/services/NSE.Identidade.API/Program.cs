@@ -62,7 +62,7 @@ builder.Services.AddApiConfiguration();
 builder.Services.AddEndpointsApiExplorer();
 
 
-builder.Services.AddMessageBus(builder.Configuration.GetConnectionString("MessageQueueConnection"));
+builder.Services.AddMessageBus("amqp://guest:guest@rabbit-host:5672/%2ffilestream;publisherConfirms=true;timeout=10");
 
 builder.Services.AddSwaggerGen(c => c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
 {

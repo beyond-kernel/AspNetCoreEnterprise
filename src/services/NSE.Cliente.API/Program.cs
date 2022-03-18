@@ -54,7 +54,8 @@ builder.Services.AddHostedService<RegistroClienteIntegrationHandler>();
 
 builder.Services.AddScoped<INotificationHandler<ClienteRegistradoEvent>, ClienteEventHandler>();
 
-builder.Services.AddMessageBus(builder.Configuration.GetConnectionString("MessageQueueConnection"));
+//builder.Services.AddMessageBus(builder.Configuration.GetConnectionString("MessageQueueConnection"));
+builder.Services.AddMessageBus("amqp://guest:guest@rabbit-host:5672/%2ffilestream;publisherConfirms=true;timeout=10");
 
 builder.Services.AddSwaggerGen(c =>
 {
