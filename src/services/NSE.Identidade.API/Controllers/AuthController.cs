@@ -1,10 +1,10 @@
-﻿using EasyNetQ;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using NSE.Core.Messages.Integration;
 using NSE.Identidade.API.Models;
+using NSE.MessageBus;
 using NSE.WebAPI.Core.Controllers;
 using NSE.WebAPI.Core.Identidade;
 using System.IdentityModel.Tokens.Jwt;
@@ -19,14 +19,14 @@ namespace NSE.Identidade.API.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly AppSettings _appSettings;
-        public IBus _bus { get; set; }
+        private readonly IMessageBus _bus;
 
-        public AuthController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IOptions<AppSettings> appSettings)
+        public AuthController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, AppSettings appSettings, IMessageBus bus)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _appSettings = appSettings.Value;
-
+            _appSettings = appSettings;-+
+            _bus = bus;
         }
 
         [HttpPost("nova-conta")]
@@ -45,7 +45,13 @@ namespace NSE.Identidade.API.Controllers
 
             if (result.Succeeded)
             {
-                var sucesso = await RegistrarCliente(usuarioRegistro);
+                var clienteResult = await RegistrarCliente(usuarioRegistro);
+
+                if (!clienteResult.ValidationResult.IsValid)
+                {
+                    await _userManager.DeleteAsync(user);
+                    return CustomResponse(clienteResult);
+                }
 
                 //await _signInManager.SignInAsync(user, isPersistent: false); //nao existe necessidade de fazer login na criacao de usuario
                 return CustomResponse(await GerarJwt(usuarioRegistro.Email));
@@ -70,9 +76,7 @@ namespace NSE.Identidade.API.Controllers
 
             try
             {
-                _bus = RabbitHutch.CreateBus("amqp://guest:guest@rabbit-host:5672/%2ffilestream");
-
-                return await _bus.Rpc.RequestAsync<UsuarioRegistradoIntegrationEvent, ResponseMessage>(usuarioRegistrado);
+                return await _bus.RequestAsync<UsuarioRegistradoIntegrationEvent, ResponseMessage>(usuarioRegistrado);
             }
             catch
             {
