@@ -21,6 +21,7 @@ namespace NSE.Cliente.API.Services
         private void SetResponder()
         {
             _bus.RespondAsync<UsuarioRegistradoIntegrationEvent, ResponseMessage>(async request => await RegistraCliente(request));
+            _bus.AdvancedBus.Connected += OnConnect;
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -28,9 +29,6 @@ namespace NSE.Cliente.API.Services
             //_bus = RabbitHutch.CreateBus("amqp://guest:guest@rabbit-host:5672/%2ffilestream");
 
             SetResponder();
-
-            _bus.AdvancedBus.Connected += OnConnect;
-
             return Task.CompletedTask;
         }
 
