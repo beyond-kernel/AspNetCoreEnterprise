@@ -25,7 +25,7 @@ namespace NSE.Identidade.API.Controllers
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _appSettings = appSettings;-+
+            _appSettings = appSettings;
             _bus = bus;
         }
 
