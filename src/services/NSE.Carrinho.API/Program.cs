@@ -1,17 +1,18 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-
+using NSE.Carrinho.API.Configuration;
 using NSE.Carrinho.API.Data;
 using NSE.WebAPI.Core.Identidade;
-using NSE.Carrinho.API;
-using NSE.Identidade.API.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
 
 builder.Configuration.SetBasePath(builder.Environment.ContentRootPath)
     .AddJsonFile("appsettings.json", true, true)
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", true, true)
     .AddEnvironmentVariables();
+
 
 // Add services to the container.
 
@@ -22,10 +23,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<CarrinhoContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<CarrinhoContext>();
-
 builder.Services.AddControllers();
 
 builder.Services.AddApiConfiguration();
+
 
 builder.Services.AddJwtConfiguration(builder.Configuration);
 
@@ -36,7 +37,7 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
     {
         Title = "NerdStore Enterprise Carrinho API",
-        Description = "Essa API possui o carrinho na aplicação",
+        Description = "Esta API faz parte do curso ASP.NET Core Enterprise Applications.",
         Contact = new Microsoft.OpenApi.Models.OpenApiContact() { Name = "Rafael", Url = new Uri("https://opensource.org/license/MIT") },
         License = new Microsoft.OpenApi.Models.OpenApiLicense() { Name = "MIT", Url = new Uri("https://opensource.org/license/MIT") }
     });
@@ -68,7 +69,6 @@ builder.Services.AddSwaggerGen(c =>
                 });
 });
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -85,4 +85,3 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.Run();
-

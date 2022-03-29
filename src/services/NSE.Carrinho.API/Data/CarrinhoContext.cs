@@ -10,7 +10,8 @@ namespace NSE.Carrinho.API.Data
         public CarrinhoContext(DbContextOptions<CarrinhoContext> options)
             : base(options)
         {
-     
+            ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            ChangeTracker.AutoDetectChangesEnabled = false;
         }
 
         public DbSet<CarrinhoItem> CarrinhoItens { get; set; }
@@ -25,15 +26,15 @@ namespace NSE.Carrinho.API.Data
             modelBuilder.Ignore<ValidationResult>();
 
             modelBuilder.Entity<CarrinhoCliente>()
-                .HasKey(c => c.ClienteId)
-                .HasName("IDX_Cliente");
+                .HasIndex(c => c.ClienteId)
+                .HasDatabaseName("IDX_Cliente");
 
             modelBuilder.Entity<CarrinhoCliente>()
                 .HasMany(c => c.Itens)
                 .WithOne(i => i.CarrinhoCliente)
                 .HasForeignKey(c => c.CarrinhoId);
 
-           // foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys())) relationship.DeleteBehavior = DeleteBehavior.ClientSetNull;
+            foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys())) relationship.DeleteBehavior = DeleteBehavior.ClientSetNull;
         }
     }
 }
