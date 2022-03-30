@@ -3,6 +3,7 @@ using Microsoft.OpenApi.Models;
 using NSE.Carrinho.API.Configuration;
 using NSE.Carrinho.API.Data;
 using NSE.WebAPI.Core.Identidade;
+using NSE.WebAPI.Core.Usuario;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<CarrinhoContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<CarrinhoContext>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddScoped<IAspNetUser, AspNetUser>();
 builder.Services.AddControllers();
 
 builder.Services.AddApiConfiguration();
