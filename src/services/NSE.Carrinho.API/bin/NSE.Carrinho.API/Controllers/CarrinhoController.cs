@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using NSE.Carrinho.API.Data;
 using NSE.Carrinho.API.Model;
 using NSE.WebAPI.Core.Controllers;
+using NSE.WebAPI.Core.Usuario;
 //using NSE.WebAPI.Core.Usuario;
 
 namespace NSE.Carrinho.API.Controllers
@@ -14,18 +15,12 @@ namespace NSE.Carrinho.API.Controllers
     [Authorize]
     public class CarrinhoController : MainController
     {
-        //private readonly IAspNetUser _user;
+        private readonly IAspNetUser _user;
         private readonly CarrinhoContext _context;
 
-        //public CarrinhoController(IAspNetUser user, CarrinhoContext context)
-        //{
-        //    _user = user;
-        //    _context = context;
-        //}       
-        
-        public CarrinhoController(CarrinhoContext context)
+        public CarrinhoController(IAspNetUser user, CarrinhoContext context)
         {
-
+            _user = user;
             _context = context;
         }
 
@@ -94,11 +89,11 @@ namespace NSE.Carrinho.API.Controllers
         {
             return await _context.CarrinhoCliente
                 .Include(c => c.Itens)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(c => c.ClienteId == _user.ObterUserId());
         }
         private void ManipularNovoCarrinho(CarrinhoItem item)
         {
-            var carrinho = new CarrinhoCliente();
+            var carrinho = new CarrinhoCliente(_user.ObterUserId());
             carrinho.AdicionarItem(item);
 
             ValidarCarrinho(carrinho);
