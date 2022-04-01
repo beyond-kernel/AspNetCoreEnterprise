@@ -12,6 +12,7 @@ namespace NSE.WebAPI.Core.Identidade
         public static void AddJwtConfiguration(this IServiceCollection services,
             IConfiguration configuration)
         {
+            services.AddScoped<AppSettings>();
             var appSettingsSection = configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
 

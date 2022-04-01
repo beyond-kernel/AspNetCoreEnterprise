@@ -139,14 +139,14 @@ namespace NSE.Identidade.API.Controllers
         {
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes(_appSettings.Secret);
+            var key = Encoding.UTF8.GetBytes(string.IsNullOrEmpty(_appSettings?.Secret) ? "MYSUPERMEGAHIDDENSECRETKEY" : _appSettings?.Secret);
 
             var token = tokenHandler.CreateToken(new SecurityTokenDescriptor
             {
-                Issuer = _appSettings.Emissor,
-                Audience = _appSettings.ValidoEm,
+                Issuer =   string.IsNullOrEmpty(_appSettings.Emissor) ? "NerdStoreEnterprise" : _appSettings.Emissor,
+                Audience = string.IsNullOrEmpty(_appSettings.ValidoEm) ? "https://localhost" : _appSettings.ValidoEm,
                 Subject = identityClaims,
-                Expires = DateTime.UtcNow.AddHours(_appSettings.ExpiracaoHoras),
+                Expires = DateTime.UtcNow.AddHours(_appSettings.ExpiracaoHoras > 0 ? _appSettings.ExpiracaoHoras : 2),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             });
 
