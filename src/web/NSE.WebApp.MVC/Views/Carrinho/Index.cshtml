@@ -40,14 +40,14 @@
                                                         </div>
                                                         <figcaption class="info">
                                                             <a asp-controller="Catalogo" asp-action="ProdutoDetalhe" asp-route-id="@item.ProdutoId"><h6 style="padding-top: 10px" class="title text-dark">@item.Nome</h6></a>
-                                                            <p class="text-muted small">@item.Quantidade</p>
+                                                            <p class="text-muted small">@this.UnidadesPorProduto(item.Quantidade)</p>
                                                         </figcaption>
                                                     </figure>
                                                 </td>
                                                 <td>
                                                     <div class="price-wrap">
-                                                        <var class="price"> @(item.Valor * item.Quantidade)</var>
-                                                        <small class="text-muted"> @item.Valor cada</small>
+                                                        <var class="price"> @this.FormatoMoeda(item.Valor * item.Quantidade)</var>
+                                                        <small class="text-muted"> @this.FormatoMoeda(item.Valor) cada</small>
                                                     </div>
                                                 </td>
                                                 <form method="post" asp-controller="Carrinho" asp-action="AtualizarItemCarrinho">
@@ -58,7 +58,7 @@
                                                         <div class="text-left">
                                                             <select id="Quantidade" name="Quantidade" style="width: 80px" class="form-control">
                                                                 @{
-                                                                    @Html.Raw(item.Quantidade)
+                                                                    @Html.Raw(this.SelectOptionsPorQuantidade(5, item.Quantidade))
                                                                 }
                                                             </select>
                                                         </div>
@@ -121,7 +121,7 @@
                             <div class="card-body">
                                 <dl class="dlist-align">
                                     <dt>Valor Total:</dt>
-                                    <dd class="text-right">@Model.ValorTotal</dd>
+                                    <dd class="text-right">@this.FormatoMoeda(Model.ValorTotal)</dd>
                                 </dl>
                                 <dl class="dlist-align">
                                     <dt>Desconto:</dt>
@@ -130,7 +130,7 @@
                                 <dl class="dlist-align">
                                     <dt>Total:</dt>
                                     <dd class="text-right  h5">
-                                        <strong>@Model.ValorTotal</strong>
+                                        <strong>@this.FormatoMoeda(Model.ValorTotal)</strong>
                                     </dd>
                                 </dl>
                                 <hr>

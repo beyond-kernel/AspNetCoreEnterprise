@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using NSE.WebApp.MVC.Extensions;
 using NSE.WebApp.MVC.Models;
+using static NSE.WebAPI.Core.Controllers.MainController;
 
 namespace NSE.WebApp.MVC.Services
 {
@@ -44,9 +45,9 @@ namespace NSE.WebApp.MVC.Services
             return true;
         }
 
-        protected ResponseResult RetornoOk()
+        protected WebAPI.Core.Controllers.MainController.ResponseResult RetornoOk()
         {
-            return new ResponseResult();
+            return new WebAPI.Core.Controllers.MainController.ResponseResult();
         }
     }
 }

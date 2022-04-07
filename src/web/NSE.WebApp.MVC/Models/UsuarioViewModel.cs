@@ -1,6 +1,7 @@
 ﻿using NSE.WebApp.MVC.Extensions;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using static NSE.WebAPI.Core.Controllers.MainController;
 
 namespace NSE.WebApp.MVC.Models
 {
@@ -43,7 +44,7 @@ namespace NSE.WebApp.MVC.Models
         public string AccessToken { get; set; }
         public double ExpiresIn { get; set; }
         public UsuarioToken UsuarioToken { get; set; }
-        public ResponseResult ResponseResult { get; set; }
+        public WebAPI.Core.Controllers.MainController.ResponseResult ResponseResult { get; set; }
     }
 
     public class UsuarioToken

@@ -1,6 +1,7 @@
 ﻿using NSE.WebApp.MVC.Models;
 using Microsoft.Extensions.Options;
 using NSE.WebApp.MVC.Extensions;
+using static NSE.WebAPI.Core.Controllers.MainController;
 
 namespace NSE.WebApp.MVC.Services
 {
@@ -26,7 +27,7 @@ namespace NSE.WebApp.MVC.Services
             {
                 return new UsuarioRespostaLogin()
                 {
-                    ResponseResult = await DeserializeObjectResponse<ResponseResult>(response)
+                    ResponseResult = await DeserializeObjectResponse<WebAPI.Core.Controllers.MainController.ResponseResult>(response)
                 };
             }
 
@@ -43,7 +44,7 @@ namespace NSE.WebApp.MVC.Services
             {
                 return new UsuarioRespostaLogin()
                 {
-                    ResponseResult = await DeserializeObjectResponse<ResponseResult>(response)
+                    ResponseResult = await DeserializeObjectResponse<WebAPI.Core.Controllers.MainController.ResponseResult>(response)
                 };
             }
 

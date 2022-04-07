@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NSE.WebApp.MVC.Models;
+using static NSE.WebAPI.Core.Controllers.MainController;
 
 namespace NSE.WebApp.MVC.Controllers
 {
     public class MainController : Controller
     {
-        protected bool ResponsePossuiErros(ResponseResult resposta)
+        protected bool ResponsePossuiErros(WebAPI.Core.Controllers.MainController.ResponseResult resposta)
         {
             if (resposta != null && resposta.Errors.Mensagens.Any())
             {

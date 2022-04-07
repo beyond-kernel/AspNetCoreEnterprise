@@ -1,8 +1,9 @@
-﻿using FluentValidation.Results;
+﻿using System.Collections.Generic;
+using System.Linq;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System.Collections.Generic;
-using System.Linq;
+
 
 namespace NSE.WebAPI.Core.Controllers
 {
@@ -10,14 +11,18 @@ namespace NSE.WebAPI.Core.Controllers
     public abstract class MainController : Controller
     {
         protected ICollection<string> Erros = new List<string>();
-        protected ActionResult CustomResponse(object? result = null)
+
+        protected ActionResult CustomResponse(object result = null)
         {
             if (OperacaoValida())
             {
                 return Ok(result);
             }
 
-            return BadRequest(new ValidationProblemDetails(new Dictionary<string, string[]> { { "Mensagens", Erros.ToArray() } }));
+            return BadRequest(new ValidationProblemDetails(new Dictionary<string, string[]>
+            {
+                { "Mensagens", Erros.ToArray() }
+            }));
         }
 
         protected ActionResult CustomResponse(ModelStateDictionary modelState)
@@ -29,8 +34,8 @@ namespace NSE.WebAPI.Core.Controllers
             }
 
             return CustomResponse();
-        } 
-        
+        }
+
         protected ActionResult CustomResponse(ValidationResult validationResult)
         {
             foreach (var erro in validationResult.Errors)
@@ -39,6 +44,25 @@ namespace NSE.WebAPI.Core.Controllers
             }
 
             return CustomResponse();
+        }
+
+        protected ActionResult CustomResponse(ResponseResult resposta)
+        {
+            ResponsePossuiErros(resposta);
+
+            return CustomResponse();
+        }
+
+        protected bool ResponsePossuiErros(ResponseResult resposta)
+        {
+            if (resposta == null || !resposta.Errors.Mensagens.Any()) return false;
+
+            foreach (var mensagem in resposta.Errors.Mensagens)
+            {
+                AdicionarErroProcessamento(mensagem);
+            }
+
+            return true;
         }
 
         protected bool OperacaoValida()
@@ -54,6 +78,25 @@ namespace NSE.WebAPI.Core.Controllers
         protected void LimparErrosProcessamento()
         {
             Erros.Clear();
+        }
+
+        public class ErrorViewModel
+        {
+            public int ErroCode { get; set; }
+            public string Titulo { get; set; }
+            public string Mensagem { get; set; }
+        }
+
+        public class ResponseResult
+        {
+            public string Title { get; set; }
+            public int Status { get; set; }
+            public ResponseErrorMessages Errors { get; set; }
+        }
+
+        public class ResponseErrorMessages
+        {
+            public List<string> Mensagens { get; set; }
         }
     }
 }
