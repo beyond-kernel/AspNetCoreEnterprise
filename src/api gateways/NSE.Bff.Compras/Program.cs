@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using NSE.Bff.Compras.Configuration;
@@ -10,26 +11,59 @@ using Polly;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddScoped<IAspNetUser, AspNetUser>();
+
+builder.Services.Configure<AppServicesSettings>(builder.Configuration);
+
+
+builder.Services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
+
+builder.Services.AddHttpClient<ICatalogoService, CatalogoService>()
+    .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
+    .AddPolicyHandler(PollyExtensions.EsperarTentar())
+    .AddTransientHttpErrorPolicy(
+        p => p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
+
+builder.Services.AddHttpClient<ICarrinhoService, CarrinhoService>()
+    .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
+    .AddPolicyHandler(PollyExtensions.EsperarTentar())
+    .AddTransientHttpErrorPolicy(
+        p => p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
+
+builder.Services.AddHttpClient<IPedidoService, PedidoService>()
+    .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
+    .AddPolicyHandler(PollyExtensions.EsperarTentar())
+    .AddTransientHttpErrorPolicy(
+        p => p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
+
+builder.Services.AddHttpClient<IClienteService, ClienteService>()
+    .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
+    .AddPolicyHandler(PollyExtensions.EsperarTentar())
+    .AddTransientHttpErrorPolicy(
+        p => p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
+
 
 builder.Configuration.SetBasePath(builder.Environment.ContentRootPath)
     .AddJsonFile("appsettings.json", true, true)
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", true, true)
     .AddEnvironmentVariables();
 
+// Add services to the container.
 
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddScoped<IAspNetUser, AspNetUser>();
-
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+builder.Services.AddControllers();
 
 builder.Services.AddApiConfiguration();
 
 builder.Services.AddJwtConfiguration(builder.Configuration);
 
 builder.Services.AddCors(opt => { opt.AddPolicy("Total", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()); });
-
-builder.Services.Configure<AppServicesSettings>(builder.Configuration);
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -69,55 +103,18 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 
-
-builder.Services.AddTransient<HttpClientAuthorizationDelegatingHandler>();
-
-builder.Services.AddHttpClient<ICatalogoService, CatalogoService>()
-    .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
-    .AddPolicyHandler(PollyExtensions.EsperarTentar())
-    .AddTransientHttpErrorPolicy(
-        p => p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
-
-builder.Services.AddHttpClient<ICarrinhoService, CarrinhoService>()
-    .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
-    .AddPolicyHandler(PollyExtensions.EsperarTentar())
-    .AddTransientHttpErrorPolicy(
-        p => p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
-
-builder.Services.AddHttpClient<IPedidoService, PedidoService>()
-    .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
-    .AddPolicyHandler(PollyExtensions.EsperarTentar())
-    .AddTransientHttpErrorPolicy(
-        p => p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
-
-builder.Services.AddHttpClient<IClienteService, ClienteService>()
-    .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
-    .AddPolicyHandler(PollyExtensions.EsperarTentar())
-    .AddTransientHttpErrorPolicy(
-        p => p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
-
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
 }
 
 app.UseApiConfiguration(app.Environment);
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
-
-app.UseAuthorization();
-
 
 app.MapControllers();
 
