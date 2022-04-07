@@ -27,33 +27,33 @@ namespace NSE.WebApp.MVC.Services
             return await DeserializeObjectResponse<CarrinhoViewModel>(response);
         }
 
-        public async Task<WebAPI.Core.Controllers.MainController.ResponseResult> AdicionarItemCarrinho(ItemProdutoViewModel produto)
+        public async Task<ResponseResult> AdicionarItemCarrinho(ItemProdutoViewModel produto)
         {
             var itemContent = ObterConteudo(produto);
 
             var response = await _httpClient.PostAsync("/carrinho/", itemContent);
 
-            if(!TratarErrosResponse(response)) return await DeserializeObjectResponse<WebAPI.Core.Controllers.MainController.ResponseResult>(response);
+            if(!TratarErrosResponse(response)) return await DeserializeObjectResponse<ResponseResult>(response);
 
             return RetornoOk();
         }
 
-        public async Task<WebAPI.Core.Controllers.MainController.ResponseResult> AtualizarItemCarrinho(Guid produtoId, ItemProdutoViewModel produto)
+        public async Task<ResponseResult> AtualizarItemCarrinho(Guid produtoId, ItemProdutoViewModel produto)
         {
             var itemContent = ObterConteudo(produto);
 
             var response = await _httpClient.PutAsync($"/carrinho/{produto.ProdutoId}", itemContent);
 
-            if (!TratarErrosResponse(response)) return await DeserializeObjectResponse<WebAPI.Core.Controllers.MainController.ResponseResult>(response);
+            if (!TratarErrosResponse(response)) return await DeserializeObjectResponse<ResponseResult>(response);
 
             return RetornoOk();
         }
 
-        public async Task<WebAPI.Core.Controllers.MainController.ResponseResult> RemoverItemCarrinho(Guid produtoId)
+        public async Task<ResponseResult> RemoverItemCarrinho(Guid produtoId)
         {
             var response = await _httpClient.DeleteAsync($"/carrinho/{produtoId}");
 
-            if (!TratarErrosResponse(response)) return await DeserializeObjectResponse<WebAPI.Core.Controllers.MainController.ResponseResult>(response);
+            if (!TratarErrosResponse(response)) return await DeserializeObjectResponse<ResponseResult>(response);
 
             return RetornoOk();
         }

@@ -45,9 +45,9 @@ namespace NSE.WebApp.MVC.Services
             return true;
         }
 
-        protected WebAPI.Core.Controllers.MainController.ResponseResult RetornoOk()
+        protected ResponseResult RetornoOk()
         {
-            return new WebAPI.Core.Controllers.MainController.ResponseResult();
+            return new ResponseResult();
         }
     }
 }

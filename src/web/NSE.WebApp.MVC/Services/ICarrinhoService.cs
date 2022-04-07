@@ -8,8 +8,8 @@ namespace NSE.WebApp.MVC.Services
     public interface ICarrinhoService
     {
         Task<CarrinhoViewModel> ObterCarrinho();
-        Task<WebAPI.Core.Controllers.MainController.ResponseResult> AdicionarItemCarrinho(ItemProdutoViewModel produto);
-        Task<WebAPI.Core.Controllers.MainController.ResponseResult> AtualizarItemCarrinho(Guid produtoId, ItemProdutoViewModel produto);
-        Task<WebAPI.Core.Controllers.MainController.ResponseResult> RemoverItemCarrinho(Guid produtoId);
+        Task<ResponseResult> AdicionarItemCarrinho(ItemProdutoViewModel produto);
+        Task<ResponseResult> AtualizarItemCarrinho(Guid produtoId, ItemProdutoViewModel produto);
+        Task<ResponseResult> RemoverItemCarrinho(Guid produtoId);
     }
 }

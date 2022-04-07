@@ -3,7 +3,7 @@ using System.Linq;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-
+using NSE.Core.Communication;
 
 namespace NSE.WebAPI.Core.Controllers
 {
@@ -78,25 +78,6 @@ namespace NSE.WebAPI.Core.Controllers
         protected void LimparErrosProcessamento()
         {
             Erros.Clear();
-        }
-
-        public class ErrorViewModel
-        {
-            public int ErroCode { get; set; }
-            public string Titulo { get; set; }
-            public string Mensagem { get; set; }
-        }
-
-        public class ResponseResult
-        {
-            public string Title { get; set; }
-            public int Status { get; set; }
-            public ResponseErrorMessages Errors { get; set; }
-        }
-
-        public class ResponseErrorMessages
-        {
-            public List<string> Mensagens { get; set; }
         }
     }
 }

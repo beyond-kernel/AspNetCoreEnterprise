@@ -27,7 +27,7 @@ namespace NSE.WebApp.MVC.Services
             {
                 return new UsuarioRespostaLogin()
                 {
-                    ResponseResult = await DeserializeObjectResponse<WebAPI.Core.Controllers.MainController.ResponseResult>(response)
+                    ResponseResult = await DeserializeObjectResponse<ResponseResult>(response)
                 };
             }
 
@@ -44,7 +44,7 @@ namespace NSE.WebApp.MVC.Services
             {
                 return new UsuarioRespostaLogin()
                 {
-                    ResponseResult = await DeserializeObjectResponse<WebAPI.Core.Controllers.MainController.ResponseResult>(response)
+                    ResponseResult = await DeserializeObjectResponse<ResponseResult>(response)
                 };
             }
 

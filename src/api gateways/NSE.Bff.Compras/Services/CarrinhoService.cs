@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using NSE.Bff.Compras.Extensions;
 using NSE.Bff.Compras.Models;
+using NSE.Core.Communication;
 using static NSE.WebAPI.Core.Controllers.MainController;
 
 namespace NSE.Bff.Compras.Services
