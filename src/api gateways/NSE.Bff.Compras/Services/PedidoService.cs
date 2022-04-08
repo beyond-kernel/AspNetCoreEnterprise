@@ -36,7 +36,7 @@ namespace NSE.Bff.Compras.Services
 
             var response = await _httpClient.PostAsync("/pedido/", pedidoContent);
 
-            if (!TratarErrosResponse(response)) return await DeserializarObjetoResponse<ResponseResult>(response);
+            if (!TratarErrosResponse(response)) return await DeserializeObjectResponse<ResponseResult>(response);
 
             return RetornoOk();
         }
@@ -49,7 +49,7 @@ namespace NSE.Bff.Compras.Services
 
             TratarErrosResponse(response);
 
-            return await DeserializarObjetoResponse<PedidoDTO>(response);
+            return await DeserializeObjectResponse<PedidoDTO>(response);
         }
 
         public async Task<IEnumerable<PedidoDTO>> ObterListaPorClienteId()
@@ -60,7 +60,7 @@ namespace NSE.Bff.Compras.Services
 
             TratarErrosResponse(response);
 
-            return await DeserializarObjetoResponse<IEnumerable<PedidoDTO>>(response);
+            return await DeserializeObjectResponse<IEnumerable<PedidoDTO>>(response);
         }
 
         public async Task<VoucherDTO> ObterVoucherPorCodigo(string codigo)
@@ -71,7 +71,7 @@ namespace NSE.Bff.Compras.Services
 
             TratarErrosResponse(response);
 
-            return await DeserializarObjetoResponse<VoucherDTO>(response);
+            return await DeserializeObjectResponse<VoucherDTO>(response);
         }
     }
 }

@@ -31,7 +31,7 @@ namespace NSE.Bff.Compras.Services
 
             TratarErrosResponse(response);
 
-            return await DeserializarObjetoResponse<EnderecoDTO>(response);
+            return await DeserializeObjectResponse<EnderecoDTO>(response);
         }
     }
 }

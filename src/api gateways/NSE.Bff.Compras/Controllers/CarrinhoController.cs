@@ -12,16 +12,16 @@ namespace NSE.Bff.Compras.Controllers
     [Authorize]
     public class CarrinhoController : MainController
     {
-        private readonly ICarrinhoService _carrinhoService;
+        private readonly IComprasBffService _ComprasBffService;
         private readonly ICatalogoService _catalogoService;
         private readonly IPedidoService _pedidoService;
 
         public CarrinhoController(
-            ICarrinhoService carrinhoService, 
+            IComprasBffService ComprasBffService, 
             ICatalogoService catalogoService, 
             IPedidoService pedidoService)
         {
-            _carrinhoService = carrinhoService;
+            _ComprasBffService = ComprasBffService;
             _catalogoService = catalogoService;
             _pedidoService = pedidoService;
         }
@@ -30,14 +30,14 @@ namespace NSE.Bff.Compras.Controllers
         [Route("compras/carrinho")]
         public async Task<IActionResult> Index()
         {
-            return CustomResponse(await _carrinhoService.ObterCarrinho());
+            return CustomResponse(await _ComprasBffService.ObterCarrinho());
         }
 
         [HttpGet]
         [Route("compras/carrinho-quantidade")]
         public async Task<int> ObterQuantidadeCarrinho()
         {
-            var quantidade = await _carrinhoService.ObterCarrinho();
+            var quantidade = await _ComprasBffService.ObterCarrinho();
             return quantidade?.Itens.Sum(i => i.Quantidade) ?? 0;
         }
 
@@ -54,7 +54,7 @@ namespace NSE.Bff.Compras.Controllers
             itemProduto.Valor = produto.Valor;
             itemProduto.Imagem = produto.Imagem;
 
-            var resposta = await _carrinhoService.AdicionarItemCarrinho(itemProduto);
+            var resposta = await _ComprasBffService.AdicionarItemCarrinho(itemProduto);
 
             return CustomResponse(resposta);
         }
@@ -68,7 +68,7 @@ namespace NSE.Bff.Compras.Controllers
             await ValidarItemCarrinho(produto, itemProduto.Quantidade);
             if (!OperacaoValida()) return CustomResponse();
 
-            var resposta = await _carrinhoService.AtualizarItemCarrinho(produtoId, itemProduto);
+            var resposta = await _ComprasBffService.AtualizarItemCarrinho(produtoId, itemProduto);
 
             return CustomResponse(resposta);
         }
@@ -85,7 +85,7 @@ namespace NSE.Bff.Compras.Controllers
                 return CustomResponse();
             }
 
-            var resposta = await _carrinhoService.RemoverItemCarrinho(produtoId);
+            var resposta = await _ComprasBffService.RemoverItemCarrinho(produtoId);
 
             return CustomResponse(resposta);
         }
@@ -101,7 +101,7 @@ namespace NSE.Bff.Compras.Controllers
                 return CustomResponse();
             }
 
-            var resposta = await _carrinhoService.AplicarVoucherCarrinho(voucher);
+            var resposta = await _ComprasBffService.AplicarVoucherCarrinho(voucher);
 
             return CustomResponse(resposta);
         }
@@ -109,12 +109,12 @@ namespace NSE.Bff.Compras.Controllers
         private async Task ValidarItemCarrinho(ItemProdutoDTO produto, int quantidade, bool adicionarProduto = false)
         {
             if (produto == null) AdicionarErroProcessamento("Produto inexistente!");
-            if (quantidade < 1) AdicionarErroProcessamento($"Escolha ao menos uma unidade do produto {produto.Nome}");
+            if (quantidade < 1) AdicionarErroProcessamento($"Escolha ao menos uma unidade do produto {produto?.Nome}");
 
-            var carrinho = await _carrinhoService.ObterCarrinho();
-            var itemCarrinho = carrinho.Itens.FirstOrDefault(p => p.ProdutoId == produto.Id);
+            var carrinho = await _ComprasBffService.ObterCarrinho();
+            var itemCarrinho = carrinho.Itens.FirstOrDefault(p => p.ProdutoId == produto?.Id);
 
-            if (itemCarrinho != null && adicionarProduto && itemCarrinho.Quantidade + quantidade > produto.QuantidadeEstoque)
+            if (itemCarrinho != null && adicionarProduto && itemCarrinho.Quantidade + quantidade > produto?.QuantidadeEstoque)
             {
                 AdicionarErroProcessamento($"O produto {produto.Nome} possui {produto.QuantidadeEstoque} unidades em estoque, você selecionou {quantidade}");
                 return;

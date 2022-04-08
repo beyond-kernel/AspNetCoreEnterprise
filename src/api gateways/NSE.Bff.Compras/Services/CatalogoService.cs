@@ -30,7 +30,7 @@ namespace NSE.Bff.Compras.Services
 
             TratarErrosResponse(response);
 
-            return await DeserializarObjetoResponse<ItemProdutoDTO>(response);
+            return await DeserializeObjectResponse<ItemProdutoDTO>(response);
         }
 
         public async Task<IEnumerable<ItemProdutoDTO>> ObterItens(IEnumerable<Guid> ids)
@@ -41,7 +41,7 @@ namespace NSE.Bff.Compras.Services
 
             TratarErrosResponse(response);
 
-            return await DeserializarObjetoResponse<IEnumerable<ItemProdutoDTO>>(response);
+            return await DeserializeObjectResponse<IEnumerable<ItemProdutoDTO>>(response);
         }
     }
 }

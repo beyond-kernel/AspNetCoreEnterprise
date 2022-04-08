@@ -25,7 +25,7 @@ builder.Services.AddHttpClient<ICatalogoService, CatalogoService>()
     .AddTransientHttpErrorPolicy(
         p => p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
 
-builder.Services.AddHttpClient<ICarrinhoService, CarrinhoService>()
+builder.Services.AddHttpClient<IComprasBffService, ComprasBffService>()
     .AddHttpMessageHandler<HttpClientAuthorizationDelegatingHandler>()
     .AddPolicyHandler(PollyExtensions.EsperarTentar())
     .AddTransientHttpErrorPolicy(

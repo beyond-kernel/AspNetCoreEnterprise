@@ -2,8 +2,8 @@
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using NSE.Core.Communication;
 using NSE.WebApp.MVC.Extensions;
-using NSE.WebApp.MVC.Models;
 using static NSE.WebAPI.Core.Controllers.MainController;
 
 namespace NSE.WebApp.MVC.Services

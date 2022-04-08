@@ -1,55 +1,50 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using NSE.WebApp.MVC.Models;
 using NSE.WebApp.MVC.Services;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 namespace NSE.WebApp.MVC.Controllers
 {
-    [ApiController]
-    [Route("Identidade")]
-    public class IndetidadeController : MainController
+    public class IdentidadeController : MainController
     {
         private readonly IAutenticacaoService _autenticacaoService;
 
-        public IndetidadeController(IAutenticacaoService autenticacaoService)
+        public IdentidadeController(IAutenticacaoService autenticacaoService)
         {
             _autenticacaoService = autenticacaoService;
         }
 
         [HttpGet]
-        [Route("Registro")]
+        [Route("nova-conta")]
         public IActionResult Registro()
         {
             return View();
         }
 
         [HttpPost]
-        [Route("Registro")]
-        public async Task<IActionResult> Registro([FromForm] UsuarioRegistro usuarioRegistro)
+        [Route("nova-conta")]
+        public async Task<IActionResult> Registro(UsuarioRegistro usuarioRegistro)
         {
             if (!ModelState.IsValid) return View(usuarioRegistro);
 
-            //API - Registro
-
             var resposta = await _autenticacaoService.Registro(usuarioRegistro);
-
 
             if (ResponsePossuiErros(resposta.ResponseResult)) return View(usuarioRegistro);
 
-            //Realizar Login
+            await RealizarLogin(resposta);
 
-            await Realizarlogin(resposta);
-
-            return RedirectToAction("Index", "Home");
-
+            return RedirectToAction("Index", "Catalogo");
         }
 
         [HttpGet]
         [Route("login")]
-        public IActionResult Login(string? returnUrl = null)
+        public IActionResult Login(string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
             return View();
@@ -57,35 +52,31 @@ namespace NSE.WebApp.MVC.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login([FromForm] UsuarioLogin usuarioLogin, string? returnUrl = null)
+        public async Task<IActionResult> Login(UsuarioLogin usuarioLogin, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
             if (!ModelState.IsValid) return View(usuarioLogin);
-
-            //API - Login
 
             var resposta = await _autenticacaoService.Login(usuarioLogin);
 
             if (ResponsePossuiErros(resposta.ResponseResult)) return View(usuarioLogin);
 
-            //Realizar Login
+            await RealizarLogin(resposta);
 
-            await Realizarlogin(resposta);
-
-            if (string.IsNullOrEmpty(returnUrl)) return RedirectToAction("Index", "Home");
+            if (string.IsNullOrEmpty(returnUrl)) return RedirectToAction("Index", "Catalogo");
 
             return LocalRedirect(returnUrl);
         }
 
         [HttpGet]
-        [Route("Logout")]
+        [Route("sair")]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Catalogo");
         }
 
-        private async Task Realizarlogin(UsuarioRespostaLogin resposta)
+        private async Task RealizarLogin(UsuarioRespostaLogin resposta)
         {
             var token = ObterTokenFormatado(resposta.AccessToken);
 
@@ -101,14 +92,14 @@ namespace NSE.WebApp.MVC.Controllers
                 IsPersistent = true
             };
 
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                new System.Security.Claims.ClaimsPrincipal(claimsIdentity),
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity),
                 authProperties);
         }
 
-        private static JwtSecurityToken? ObterTokenFormatado(string jwtToken)
+        private static JwtSecurityToken ObterTokenFormatado(string jwtToken)
         {
-
             return new JwtSecurityTokenHandler().ReadToken(jwtToken) as JwtSecurityToken;
         }
     }

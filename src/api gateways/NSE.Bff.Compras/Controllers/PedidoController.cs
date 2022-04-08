@@ -14,18 +14,18 @@ namespace NSE.Bff.Compras.Controllers
     public class PedidoController : MainController
     {
         private readonly ICatalogoService _catalogoService;
-        private readonly ICarrinhoService _carrinhoService;
+        private readonly IComprasBffService _ComprasBffService;
         private readonly IPedidoService _pedidoService;
         private readonly IClienteService _clienteService;
 
         public PedidoController(
             ICatalogoService catalogoService,
-            ICarrinhoService carrinhoService,
+            IComprasBffService ComprasBffService,
             IPedidoService pedidoService,
             IClienteService clienteService)
         {
             _catalogoService = catalogoService;
-            _carrinhoService = carrinhoService;
+            _ComprasBffService = ComprasBffService;
             _pedidoService = pedidoService;
             _clienteService = clienteService;
         }
@@ -34,7 +34,7 @@ namespace NSE.Bff.Compras.Controllers
         [Route("compras/pedido")]
         public async Task<IActionResult> AdicionarPedido(PedidoDTO pedido)
         {
-            var carrinho = await _carrinhoService.ObterCarrinho();
+            var carrinho = await _ComprasBffService.ObterCarrinho();
             var produtos = await _catalogoService.ObterItens(carrinho.Itens.Select(p => p.ProdutoId));
             var endereco = await _clienteService.ObterEndereco();
 
@@ -93,7 +93,7 @@ namespace NSE.Bff.Compras.Controllers
 
                     AdicionarErroProcessamento(msgErro);
 
-                    var responseRemover = await _carrinhoService.RemoverItemCarrinho(itemCarrinho.ProdutoId);
+                    var responseRemover = await _ComprasBffService.RemoverItemCarrinho(itemCarrinho.ProdutoId);
                     if (ResponsePossuiErros(responseRemover))
                     {
                         AdicionarErroProcessamento($"Não foi possível remover automaticamente o produto {itemCarrinho.Nome} do seu carrinho, _" +
@@ -102,7 +102,7 @@ namespace NSE.Bff.Compras.Controllers
                     }
 
                     itemCarrinho.Valor = produtoCatalogo.Valor;
-                    var responseAdicionar = await _carrinhoService.AdicionarItemCarrinho(itemCarrinho);
+                    var responseAdicionar = await _ComprasBffService.AdicionarItemCarrinho(itemCarrinho);
 
                     if (ResponsePossuiErros(responseAdicionar))
                     {

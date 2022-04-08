@@ -18,7 +18,7 @@ namespace NSE.Bff.Compras.Services
                 "application/json");
         }
 
-        protected async Task<T> DeserializarObjetoResponse<T>(HttpResponseMessage responseMessage)
+        protected async Task<T> DeserializeObjectResponse<T>(HttpResponseMessage responseMessage)
         {
             var options = new JsonSerializerOptions
             {

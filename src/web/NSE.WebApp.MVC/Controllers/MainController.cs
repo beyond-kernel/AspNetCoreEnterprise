@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+using NSE.Core.Communication;
 using NSE.WebApp.MVC.Models;
-using static NSE.WebAPI.Core.Controllers.MainController;
+using ResponseResult = NSE.Core.Communication.ResponseResult;
 
 namespace NSE.WebApp.MVC.Controllers
 {
