@@ -15,13 +15,13 @@ namespace NSE.Pedidos.API.Data
 {
     public class PedidosContext : DbContext, IUnitOfWork
     {
-        //private readonly IMediatorHandler _mediatorHandler;
+        private readonly IMediatorHandler _mediatorHandler;
 
-        public PedidosContext(DbContextOptions<PedidosContext> options//, IMediatorHandler mediatorHandler
+        public PedidosContext(DbContextOptions<PedidosContext> options, IMediatorHandler mediatorHandler
             )
             : base(options)
         {
-            //_mediatorHandler = mediatorHandler;
+            _mediatorHandler = mediatorHandler;
         }
 
 
@@ -65,7 +65,7 @@ namespace NSE.Pedidos.API.Data
             }
 
             var sucesso = await base.SaveChangesAsync() > 0;
-            //if (sucesso) await _mediatorHandler.PublicarEventos(this);
+            if (sucesso) await _mediatorHandler.PublicarEventos(this);
 
             return sucesso;
         }
