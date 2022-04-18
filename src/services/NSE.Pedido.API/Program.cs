@@ -1,20 +1,18 @@
-
-
 using FluentValidation.Results;
-using MediatR;
+//using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using NSE.Core.Mediator;
+//using NSE.Core.Mediator;
 using NSE.Pedidos.API.Application.Commands;
 using NSE.Pedidos.API.Application.Events;
 using NSE.Pedidos.API.Application.Queries;
 using NSE.Pedidos.API.Configuration;
+using NSE.Pedidos.API.Data;
+using NSE.Pedidos.API.Data.Repository;
 using NSE.Pedidos.Domain;
 using NSE.Pedidos.Domain.Pedidos;
-using NSE.Pedidos.Infra.Data;
-using NSE.Pedidos.Infra.Data.Repository;
 using NSE.WebAPI.Core.Identidade;
 using NSE.WebAPI.Core.Usuario;
 using System.Text;
@@ -59,13 +57,13 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IAspNetUser, AspNetUser>();
 
 // Commands
-builder.Services.AddScoped<IRequestHandler<AdicionarPedidoCommand, ValidationResult>, PedidoCommandHandler>();
+//builder.Services.AddScoped<IRequestHandler<AdicionarPedidoCommand, ValidationResult>, PedidoCommandHandler>();
 
 // Events
-builder.Services.AddScoped<INotificationHandler<PedidoRealizadoEvent>, PedidoEventHandler>();
+//builder.Services.AddScoped<INotificationHandler<PedidoRealizadoEvent>, PedidoEventHandler>();
 
 // Application
-builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();
+//builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();
 builder.Services.AddScoped<IVoucherQueries, VoucherQueries>();
 builder.Services.AddScoped<IPedidoQueries, PedidoQueries>();
 

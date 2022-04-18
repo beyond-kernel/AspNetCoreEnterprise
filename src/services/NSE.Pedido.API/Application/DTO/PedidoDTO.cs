@@ -20,7 +20,7 @@ namespace NSE.Pedidos.API.Application.DTO
         public List<PedidoItemDTO> PedidoItems { get; set; }
         public EnderecoDTO Endereco { get; set; }
 
-        public static PedidoDTO ParaPedidoDTO(Pedido pedido)
+        public static PedidoDTO ParaPedidoDTO(Domain.Pedidos.Pedido pedido)
         {
             var pedidoDTO = new PedidoDTO
             {

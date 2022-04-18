@@ -55,7 +55,7 @@ namespace NSE.Pedidos.API.Application.Commands
             return await PersistirDados(_pedidoRepository.UnitOfWork);
         }
 
-        private Pedido MapearPedido(AdicionarPedidoCommand message)
+        private Domain.Pedidos.Pedido MapearPedido(AdicionarPedidoCommand message)
         {
             var endereco = new Endereco
             {
@@ -68,14 +68,14 @@ namespace NSE.Pedidos.API.Application.Commands
                 Estado = message.Endereco.Estado
             };
 
-            var pedido = new Pedido(message.ClienteId, message.ValorTotal, message.PedidoItems.Select(PedidoItemDTO.ParaPedidoItem).ToList(),
+            var pedido = new Domain.Pedidos.Pedido(message.ClienteId, message.ValorTotal, message.PedidoItems.Select(PedidoItemDTO.ParaPedidoItem).ToList(),
                 message.VoucherUtilizado, message.Desconto);
 
             pedido.AtribuirEndereco(endereco);
             return pedido;
         }
 
-        private async Task<bool> AplicarVoucher(AdicionarPedidoCommand message, Pedido pedido)
+        private async Task<bool> AplicarVoucher(AdicionarPedidoCommand message, Domain.Pedidos.Pedido pedido)
         {
             if (!message.VoucherUtilizado) return true;
 
@@ -101,7 +101,7 @@ namespace NSE.Pedidos.API.Application.Commands
             return true;
         }
 
-        private bool ValidarPedido(Pedido pedido)
+        private bool ValidarPedido(Domain.Pedidos.Pedido pedido)
         {
             var pedidoValorOriginal = pedido.ValorTotal;
             var pedidoDesconto = pedido.Desconto;
@@ -123,7 +123,7 @@ namespace NSE.Pedidos.API.Application.Commands
             return true;
         }
 
-        public bool ProcessarPagamento(Pedido pedido)
+        public bool ProcessarPagamento(Domain.Pedidos.Pedido pedido)
         {
             return true;
         }
