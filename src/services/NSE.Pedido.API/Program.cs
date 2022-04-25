@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NetDevPack.Mediator;
-//using NSE.Core.Mediator;
+//using NetDevPack.Mediator;
 using NSE.Pedidos.API.Application.Commands;
 using NSE.Pedidos.API.Application.Events;
 using NSE.Pedidos.API.Application.Queries;
@@ -64,7 +64,7 @@ builder.Services.AddScoped<IAspNetUser, AspNetUser>();
 //builder.Services.AddScoped<INotificationHandler<PedidoRealizadoEvent>, PedidoEventHandler>();
 
 // Application
-builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();
+//builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();
 builder.Services.AddScoped<IVoucherQueries, VoucherQueries>();
 builder.Services.AddScoped<IPedidoQueries, PedidoQueries>();
 
@@ -73,14 +73,16 @@ builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
 builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
 builder.Services.AddScoped<PedidosContext>();
 
-builder.Services.AddJwtConfiguration(builder.Configuration);
+//builder.Services.AddJwtConfiguration(builder.Configuration);
+
+//builder.Services.AddMediatR(typeof(Program));
 
 var appSettingsSection = builder.Configuration.GetSection("AppSettings");
 builder.Services.Configure<AppSettings>(appSettingsSection);
 
 var appSettings = appSettingsSection.Get<AppSettings>();
 var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-
+ 
 //configuracao JWT
 builder.Services.AddAuthentication(opt =>
 {
@@ -104,6 +106,7 @@ builder.Services.AddAuthentication(opt =>
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
 
 
 //builder.Services.AddMessageBus("amqp://guest:guest@rabbit-host:5672/%2ffilestream;publisherConfirms=true;timeout=10");

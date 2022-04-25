@@ -8,7 +8,6 @@ using NSE.Carrinho.API.Data;
 using NSE.Carrinho.API.Model;
 using NSE.WebAPI.Core.Controllers;
 using NSE.WebAPI.Core.Usuario;
-//using NSE.WebAPI.Core.Usuario;
 
 namespace NSE.Carrinho.API.Controllers
 {
@@ -85,30 +84,25 @@ namespace NSE.Carrinho.API.Controllers
             return CustomResponse();
         }
 
+        [HttpPost]
+        [Route("carrinho/aplicar-voucher")]
+        public async Task<IActionResult> AplicarVoucher(Voucher voucher)
+        {
+            var carrinho = await ObterCarrinhoCliente();
+
+            carrinho.AplicarVoucher(voucher);
+
+            _context.CarrinhoCliente.Update(carrinho);
+
+            await PersistirDados();
+            return CustomResponse();
+        }
+
         private async Task<CarrinhoCliente> ObterCarrinhoCliente()
         {
-            //return await _context.CarrinhoCliente
-            //    .Include(c => c.Itens)
-            //    .FirstOrDefaultAsync(c => c.ClienteId == _user.ObterUserId());
-
-            return new CarrinhoCliente()
-            {
-                Itens = new List<CarrinhoItem>()
-                {
-                    new CarrinhoItem()
-                    {
-                        ProdutoId = Guid.Parse("7d67df76-2d4e-4a47-a19c-08eb80a9060b"),
-                        Nome = "Camiseta Code Life Preta",
-                        Quantidade = 1,
-                        Valor = 100M,
-                        Imagem = "camiseta2.jpg"
-
-                    }
-                },
-                ClienteId = _user.ObterUserId(),
-                ValorTotal = 100M
-            };
-
+            return await _context.CarrinhoCliente
+                .Include(c => c.Itens)
+                .FirstOrDefaultAsync(c => c.ClienteId == _user.ObterUserId());
         }
         private void ManipularNovoCarrinho(CarrinhoItem item)
         {
@@ -136,7 +130,7 @@ namespace NSE.Carrinho.API.Controllers
 
             _context.CarrinhoCliente.Update(carrinho);
         }
-        private async Task<CarrinhoItem> ObterItemCarrinhoValidado(Guid produtoId, CarrinhoCliente carrinho, CarrinhoItem? item = null)
+        private async Task<CarrinhoItem> ObterItemCarrinhoValidado(Guid produtoId, CarrinhoCliente carrinho, CarrinhoItem item = null)
         {
             if (item != null && produtoId != item.ProdutoId)
             {

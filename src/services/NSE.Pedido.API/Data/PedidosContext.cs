@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using NSE.Core.Data;
 using NSE.Core.DomainObjects;
-using NSE.Core.Mediator;
+//using NSE.Core.Mediator;
 using NSE.Core.Messages;
 using NSE.Pedidos.Domain;
 using NSE.Pedidos.Domain.Pedidos;
@@ -15,13 +15,13 @@ namespace NSE.Pedidos.API.Data
 {
     public class PedidosContext : DbContext, IUnitOfWork
     {
-        private readonly IMediatorHandler _mediatorHandler;
+        //private readonly IMediatorHandler _mediatorHandler;
 
-        public PedidosContext(DbContextOptions<PedidosContext> options, IMediatorHandler mediatorHandler
+        public PedidosContext(DbContextOptions<PedidosContext> options //, IMediatorHandler mediatorHandler
             )
             : base(options)
         {
-            _mediatorHandler = mediatorHandler;
+            //_mediatorHandler = mediatorHandler;
         }
 
 
@@ -65,33 +65,33 @@ namespace NSE.Pedidos.API.Data
             }
 
             var sucesso = await base.SaveChangesAsync() > 0;
-            if (sucesso) await _mediatorHandler.PublicarEventos(this);
+            //if (sucesso) await _mediatorHandler.PublicarEventos(this);
 
             return sucesso;
         }
     }
 
-    public static class MediatorExtension
-    {
-        public static async Task PublicarEventos<T>(this IMediatorHandler mediator, T ctx) where T : DbContext
-        {
-            var domainEntities = ctx.ChangeTracker
-                .Entries<Entity>()
-                .Where(x => x.Entity.Notificacoes != null && x.Entity.Notificacoes.Any());
+    //public static class MediatorExtension
+    //{
+    //    public static async Task PublicarEventos<T>(this IMediatorHandler mediator, T ctx) where T : DbContext
+    //    {
+    //        var domainEntities = ctx.ChangeTracker
+    //            .Entries<Entity>()
+    //            .Where(x => x.Entity.Notificacoes != null && x.Entity.Notificacoes.Any());
 
-            var domainEvents = domainEntities
-                .SelectMany(x => x.Entity.Notificacoes)
-                .ToList();
+    //        var domainEvents = domainEntities
+    //            .SelectMany(x => x.Entity.Notificacoes)
+    //            .ToList();
 
-            domainEntities.ToList()
-                .ForEach(entity => entity.Entity.LimparEventos());
+    //        domainEntities.ToList()
+    //            .ForEach(entity => entity.Entity.LimparEventos());
 
-            var tasks = domainEvents
-                .Select(async (domainEvent) => {
-                    await mediator.PublicarEvento(domainEvent);
-                });
+    //        var tasks = domainEvents
+    //            .Select(async (domainEvent) => {
+    //                await mediator.PublicarEvento(domainEvent);
+    //            });
 
-            await Task.WhenAll(tasks);
-        }
-    }
+    //        await Task.WhenAll(tasks);
+    //    }
+    //}
 }
