@@ -7,7 +7,7 @@ using NSE.WebAPI.Core.Identidade;
 namespace NSE.Catalogo.API.Controllers
 {
 
-    [Authorize]
+    //[Authorize]
     public class CatalogoController : MainController
     {
         private readonly IProdutoRepository _produtoRepository;
