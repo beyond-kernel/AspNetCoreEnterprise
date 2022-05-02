@@ -37,7 +37,7 @@ namespace NSE.Pedidos.API.Application.Queries
                                 ORDER BY P.DATACADASTRO DESC";
 
             var pedido = await _pedidoRepository.ObterConexao()
-                .QueryAsync<dynamic>(sql, new { clienteId });
+                .QueryAsync<dynamic>(sql, new { clienteId }); //consulta com Dapper
 
             return MapearPedido(pedido);
         }
