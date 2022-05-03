@@ -1,4 +1,5 @@
 using FluentValidation.Results;
+using MediatR;
 //using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -59,13 +60,13 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IAspNetUser, AspNetUser>();
 
 // Commands
-//builder.Services.AddScoped<IRequestHandler<AdicionarPedidoCommand, ValidationResult>, PedidoCommandHandler>();
+builder.Services.AddScoped<IRequestHandler<AdicionarPedidoCommand, ValidationResult>, PedidoCommandHandler>();
 
 // Events
-//builder.Services.AddScoped<INotificationHandler<PedidoRealizadoEvent>, PedidoEventHandler>();
+builder.Services.AddScoped<INotificationHandler<PedidoRealizadoEvent>, PedidoEventHandler>();
 
 // Application
-//builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();
+builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();
 builder.Services.AddScoped<IVoucherQueries, VoucherQueries>();
 builder.Services.AddScoped<IPedidoQueries, PedidoQueries>();
 
