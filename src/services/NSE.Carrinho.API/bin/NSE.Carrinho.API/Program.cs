@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using NSE.Carrinho.API.Configuration;
 using NSE.Carrinho.API.Data;
+using NSE.Carrinho.API.Services;
+using NSE.MessageBus;
 using NSE.WebAPI.Core.Identidade;
 using NSE.WebAPI.Core.Usuario;
 
@@ -23,13 +25,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<CarrinhoContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-//builder.Services.AddScoped<CarrinhoContext>();
+builder.Services.AddScoped<CarrinhoContext>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IAspNetUser, AspNetUser>();
 builder.Services.AddControllers();
 
 builder.Services.AddApiConfiguration();
-
+builder.Services.AddMessageBus("host=localhost:5672;publisherConfirms=true;timeout=10").AddHostedService<CarrinhoIntegrationHandler>();
 
 builder.Services.AddJwtConfiguration(builder.Configuration);
 

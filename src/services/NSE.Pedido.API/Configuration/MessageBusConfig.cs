@@ -10,7 +10,7 @@ namespace NSE.Pedidos.API.Configuration
         public static void AddMessageBusConfiguration(this IServiceCollection services,
             IConfiguration configuration)
         {
-            //services.AddMessageBus(configuration.GetMessageQueueConnection("MessageBus"));
+            services.AddMessageBus("host=localhost:5672;publisherConfirms=true;timeout=10");
         }
     }
 }

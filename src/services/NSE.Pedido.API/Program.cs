@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NetDevPack.Mediator;
+using NSE.MessageBus;
 //using NetDevPack.Mediator;
 using NSE.Pedidos.API.Application.Commands;
 using NSE.Pedidos.API.Application.Events;
@@ -110,6 +111,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 
 //builder.Services.AddMessageBus("amqp://guest:guest@rabbit-host:5672/%2ffilestream;publisherConfirms=true;timeout=10");
+builder.Services.AddMessageBus("host=localhost:5672;publisherConfirms=true;timeout=10");
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo()
