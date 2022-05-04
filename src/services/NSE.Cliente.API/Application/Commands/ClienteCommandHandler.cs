@@ -1,14 +1,17 @@
 ﻿using FluentValidation.Results;
 using MediatR;
 using NSE.Cliente.API.Application.Events;
-using NSE.Clientes.API.Models;
+using NSE.Cliente.API.Application.Commands;
+using NSE.Cliente.API.Models;
 using NSE.Core.Messages;
-using c = NSE.Clientes.API.Models;
+using c = NSE.Cliente.API.Models;
 
 
 namespace NSE.Cliente.API.Application.Commands
 {
-    public class ClienteCommandHandler : CommandHandler, IRequestHandler<RegistrarClienteCommand, ValidationResult>
+    public class ClienteCommandHandler : CommandHandler,
+         IRequestHandler<RegistrarClienteCommand, ValidationResult>,
+         IRequestHandler<AdicionarEnderecoCommand, ValidationResult>
     {
         private readonly IClienteRepository _clienteRepository;
 
@@ -19,16 +22,15 @@ namespace NSE.Cliente.API.Application.Commands
 
         public async Task<ValidationResult> Handle(RegistrarClienteCommand message, CancellationToken cancellationToken)
         {
-            if (!message.EhValido())
-                return message.ValidationResult;
+            if (!message.EhValido()) return message.ValidationResult;
 
-            var cliente = new c.Cliente(message.Id, message.Nome, message.Email, message.Cpf);
+            var cliente = new NSE.Cliente.API.Models.Cliente(message.Id, message.Nome, message.Email, message.Cpf);
 
-            var clienteExiste = await _clienteRepository.ObterPorCpf(cliente.Cpf.Numero);
+            var clienteExistente = await _clienteRepository.ObterPorCpf(cliente.Cpf.Numero);
 
-            if (clienteExiste != null)
+            if (clienteExistente != null)
             {
-                AdicionarErros("CPF já está em uso");
+                //AdicionarErro("Este CPF já está em uso.");
                 return ValidationResult;
             }
 
@@ -39,6 +41,14 @@ namespace NSE.Cliente.API.Application.Commands
             return await PersistirDados(_clienteRepository.UnitOfWork);
         }
 
-   
+        public async Task<ValidationResult> Handle(AdicionarEnderecoCommand message, CancellationToken cancellationToken)
+        {
+            if (!message.EhValido()) return message.ValidationResult;
+
+            var endereco = new Endereco(message.Logradouro, message.Numero, message.Complemento, message.Bairro, message.Cep, message.Cidade, message.Estado, message.ClienteId);
+            _clienteRepository.AdicionarEndereco(endereco);
+
+            return await PersistirDados(_clienteRepository.UnitOfWork);
+        }
     }
 }

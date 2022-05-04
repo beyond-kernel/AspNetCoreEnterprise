@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NSE.Clientes.API.Data;
+using NSE.Cliente.API.Data;
 using NSE.WebAPI.Core.Identidade;
 
 namespace NSE.Cliente.API.Configuration

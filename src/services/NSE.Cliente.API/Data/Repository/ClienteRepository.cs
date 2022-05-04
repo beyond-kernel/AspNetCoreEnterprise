@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using NSE.Clientes.API.Models;
+using NSE.Cliente.API.Models;
 using NSE.Core.Data;
 
-namespace NSE.Clientes.API.Data.Repository
+namespace NSE.Cliente.API.Data.Repository
 {
     public class ClienteRepository : IClienteRepository
     {
+
         private readonly ClienteContext _context;
 
         public ClienteRepository(ClienteContext context)
@@ -17,24 +18,35 @@ namespace NSE.Clientes.API.Data.Repository
 
         public IUnitOfWork UnitOfWork => _context;
 
-        public async Task<IEnumerable<NSE.Clientes.API.Models.Cliente>> ObterTodos()
+        public async Task<IEnumerable<Models.Cliente>> ObterTodos()
         {
             return await _context.Clientes.AsNoTracking().ToListAsync();
         }
 
-        public async Task<NSE.Clientes.API.Models.Cliente> ObterPorCpf(string cpf)
+        public Task<Models.Cliente> ObterPorCpf(string cpf)
         {
-            return await _context.Clientes.FirstOrDefaultAsync(c => c.Cpf.Numero == cpf);
+            return _context.Clientes.FirstOrDefaultAsync(c => c.Cpf.Numero == cpf);
         }
 
-        public void Adicionar(NSE.Clientes.API.Models.Cliente cliente)
+        public void AdicionarEndereco(Endereco endereco)
         {
-            _context.Clientes.Add(cliente);
+            _context.Enderecos.Add(endereco);
+        }
+
+        public async Task<Endereco> ObterEnderecoPorId(Guid id)
+        {
+            return await _context.Enderecos.FirstOrDefaultAsync(e => e.ClienteId == id);
         }
 
         public void Dispose()
         {
             _context.Dispose();
         }
+
+        public void Adicionar(Models.Cliente cliente)
+        {
+            _context.Clientes.Add(cliente);
+        }
+
     }
 }

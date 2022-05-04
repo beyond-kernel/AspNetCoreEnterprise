@@ -10,6 +10,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Application\Querys\**" />
+    <Content Remove="Application\Querys\**" />
+    <EmbeddedResource Remove="Application\Querys\**" />
+    <None Remove="Application\Querys\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MediatR" Version="10.0.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
@@ -35,7 +42,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\Querys\" />
+    <Folder Include="Application\Queries\" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using NSE.Clientes.API.Models;
+using NSE.Cliente.API.Models;
 
-namespace NSE.Clientes.API.Data.Mappings
+namespace NSE.Cliente.API.Data.Mappings
 {
     public class EnderecoMapping : IEntityTypeConfiguration<Endereco>
     {

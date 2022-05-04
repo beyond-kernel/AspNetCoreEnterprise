@@ -6,9 +6,10 @@ using NSE.Cliente.API.Application.Commands;
 using NSE.Cliente.API.Application.Events;
 using NSE.Cliente.API.Configuration;
 using NSE.Cliente.API.Services;
-using NSE.Clientes.API.Data;
-using NSE.Clientes.API.Data.Repository;
-using NSE.Clientes.API.Models;
+using NSE.Cliente.API.Application.Commands;
+using NSE.Cliente.API.Data;
+using NSE.Cliente.API.Data.Repository;
+using NSE.Cliente.API.Models;
 using NSE.Core.Mediator;
 using NSE.MessageBus;
 using NSE.WebAPI.Core.Identidade;
@@ -49,6 +50,7 @@ builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();
 
 //RegistrarClienteCommand que vai ser entregue via IRequestHandler e que retorna um ValidationResult vai ser manipulado por ClienteCommandHandler
 builder.Services.AddScoped<IRequestHandler<RegistrarClienteCommand, ValidationResult>, ClienteCommandHandler>();
+builder.Services.AddScoped<IRequestHandler<AdicionarEnderecoCommand, ValidationResult>, ClienteCommandHandler>();
 
 builder.Services.AddHostedService<RegistroClienteIntegrationHandler>();
 

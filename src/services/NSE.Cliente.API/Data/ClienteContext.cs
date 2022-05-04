@@ -2,13 +2,13 @@
 using System.Threading.Tasks;
 using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
-using NSE.Clientes.API.Models;
+using NSE.Cliente.API.Models;
 using NSE.Core.Data;
 using NSE.Core.DomainObjects;
 using NSE.Core.Mediator;
 using NSE.Core.Messages;
 
-namespace NSE.Clientes.API.Data
+namespace NSE.Cliente.API.Data
 {
     public class ClienteContext : DbContext, IUnitOfWork
     {
@@ -21,7 +21,7 @@ namespace NSE.Clientes.API.Data
             _mediatorHandler = mediatorHandler;
         }
 
-        public DbSet<NSE.Clientes.API.Models.Cliente> Clientes { get; set; }
+        public DbSet<NSE.Cliente.API.Models.Cliente> Clientes { get; set; }
         public DbSet<Endereco> Enderecos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

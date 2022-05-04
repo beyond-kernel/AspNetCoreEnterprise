@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using NSE.Clientes.API.Data;
+using NSE.Cliente.API.Data;
 
 #nullable disable
 
@@ -22,7 +22,7 @@ namespace NSE.Cliente.API.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("NSE.Clientes.API.Models.Cliente", b =>
+            modelBuilder.Entity("NSE.Cliente.API.Models.Cliente", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -40,7 +40,7 @@ namespace NSE.Cliente.API.Migrations
                     b.ToTable("Clientes", (string)null);
                 });
 
-            modelBuilder.Entity("NSE.Clientes.API.Models.Endereco", b =>
+            modelBuilder.Entity("NSE.Cliente.API.Models.Endereco", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -85,7 +85,7 @@ namespace NSE.Cliente.API.Migrations
                     b.ToTable("Enderecos", (string)null);
                 });
 
-            modelBuilder.Entity("NSE.Clientes.API.Models.Cliente", b =>
+            modelBuilder.Entity("NSE.Cliente.API.Models.Cliente", b =>
                 {
                     b.OwnsOne("NSE.Core.DomainObjects.Cpf", "Cpf", b1 =>
                         {
@@ -131,17 +131,17 @@ namespace NSE.Cliente.API.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("NSE.Clientes.API.Models.Endereco", b =>
+            modelBuilder.Entity("NSE.Cliente.API.Models.Endereco", b =>
                 {
-                    b.HasOne("NSE.Clientes.API.Models.Cliente", "Cliente")
+                    b.HasOne("NSE.Cliente.API.Models.Cliente", "Cliente")
                         .WithOne("Endereco")
-                        .HasForeignKey("NSE.Clientes.API.Models.Endereco", "ClienteId")
+                        .HasForeignKey("NSE.Cliente.API.Models.Endereco", "ClienteId")
                         .IsRequired();
 
                     b.Navigation("Cliente");
                 });
 
-            modelBuilder.Entity("NSE.Clientes.API.Models.Cliente", b =>
+            modelBuilder.Entity("NSE.Cliente.API.Models.Cliente", b =>
                 {
                     b.Navigation("Endereco")
                         .IsRequired();

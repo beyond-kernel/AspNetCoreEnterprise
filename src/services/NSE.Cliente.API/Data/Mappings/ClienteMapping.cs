@@ -1,13 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using NSE.Clientes.API.Models;
+using NSE.Cliente.API.Models;
 using NSE.Core.DomainObjects;
 
-namespace NSE.Clientes.API.Data.Mappings
+namespace NSE.Cliente.API.Data.Mappings
 {
-    public class ClienteMapping : IEntityTypeConfiguration<NSE.Clientes.API.Models.Cliente>
+    public class ClienteMapping : IEntityTypeConfiguration<NSE.Cliente.API.Models.Cliente>
     {
-        public void Configure(EntityTypeBuilder<NSE.Clientes.API.Models.Cliente> builder)
+        public void Configure(EntityTypeBuilder<NSE.Cliente.API.Models.Cliente> builder)
         {
             builder.HasKey(c => c.Id);
 
