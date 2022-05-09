@@ -66,7 +66,7 @@ builder.Services.AddScoped<IRequestHandler<AdicionarPedidoCommand, ValidationRes
 builder.Services.AddScoped<INotificationHandler<PedidoRealizadoEvent>, PedidoEventHandler>();
 
 // Application
-builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();
+//builder.Services.AddScoped<IMediatorHandler, MediatorHandler>();
 builder.Services.AddScoped<IVoucherQueries, VoucherQueries>();
 builder.Services.AddScoped<IPedidoQueries, PedidoQueries>();
 
