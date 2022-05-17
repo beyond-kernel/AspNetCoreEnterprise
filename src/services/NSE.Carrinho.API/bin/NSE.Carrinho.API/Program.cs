@@ -9,44 +9,48 @@ using NSE.WebAPI.Core.Usuario;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-
 builder.Configuration.SetBasePath(builder.Environment.ContentRootPath)
     .AddJsonFile("appsettings.json", true, true)
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", true, true)
     .AddEnvironmentVariables();
 
+if (builder.Environment.IsDevelopment())
+{
+    builder.Configuration.AddUserSecrets<Program>();
+}
+
+builder.Services.AddDbContext<CarrinhoContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Total",
+        builder =>
+            builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+});
 
 // Add services to the container.
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<CarrinhoContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-builder.Services.AddScoped<CarrinhoContext>();
+// API
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IAspNetUser, AspNetUser>();
-builder.Services.AddControllers();
 
-builder.Services.AddApiConfiguration();
+builder.Services.AddScoped<CarrinhoContext>();
+
 builder.Services.AddMessageBus("host=localhost:5672;publisherConfirms=true;timeout=10").AddHostedService<CarrinhoIntegrationHandler>();
 
-builder.Services.AddJwtConfiguration(builder.Configuration);
-
-builder.Services.AddCors(opt => { opt.AddPolicy("Total", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()); });
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    c.SwaggerDoc("v1", new OpenApiInfo()
     {
         Title = "NerdStore Enterprise Carrinho API",
         Description = "Esta API possui os produtos do carrinho da aplicacao.",
         Contact = new Microsoft.OpenApi.Models.OpenApiContact() { Name = "Rafael", Url = new Uri("https://opensource.org/license/MIT") },
         License = new Microsoft.OpenApi.Models.OpenApiLicense() { Name = "MIT", Url = new Uri("https://opensource.org/license/MIT") }
     });
-
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -72,21 +76,40 @@ builder.Services.AddSwaggerGen(c =>
                         new string[] {}
                     }
                 });
+
 });
+
+
+builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1"); });
+//}
 
-app.UseApiConfiguration(app.Environment);
+//app.UseApiConfiguration(app.Environment);
 
-app.UseHttpsRedirection();
+//app.UseAuthConfiguration();
 
 app.MapControllers();
 
 app.Run();
+
+app.UseHttpsRedirection();
+
+app.UseRouting();
+
+app.UseCors("Total");
+
+app.UseAuthConfiguration();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});

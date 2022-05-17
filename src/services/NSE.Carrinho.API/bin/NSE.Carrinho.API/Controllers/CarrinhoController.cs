@@ -11,7 +11,7 @@ using NSE.WebAPI.Core.Usuario;
 
 namespace NSE.Carrinho.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class CarrinhoController : MainController
     {
         private readonly IAspNetUser _user;
