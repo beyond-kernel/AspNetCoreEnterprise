@@ -31,7 +31,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\building blocks\NSE.WebAPI.Core\NSE.WebAPI.Core.csproj" />
     <ProjectReference Include="..\..\..\NSE.Identidade.API\NSE.Identidade.API.csproj" />
-    <ProjectReference Include="..\..\..\NSE.Pedido.API\NSE.Pedido.API.csproj" />
+    <ProjectReference Include="..\..\..\NSE.Pedido.API\NSE.Pedidos.API.csproj" />
   </ItemGroup>
 
 </Project>
