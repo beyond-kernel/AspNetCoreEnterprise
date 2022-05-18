@@ -6,6 +6,8 @@ using NSE.Catalogo.API.Data.Repository;
 using NSE.Catalogo.API.Models;
 using NSE.WebAPI.Core.Identidade;
 using NSE.Catalogo.API;
+using NSE.MessageBus;
+using NSE.Catalogo.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +26,8 @@ builder.Services.AddDbContext<CatalogoContext>(opt => opt.UseSqlServer(builder.C
 
 builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
 builder.Services.AddScoped<CatalogoContext>();
+
+builder.Services.AddMessageBus("host=localhost:5672;publisherConfirms=true;timeout=10").AddHostedService<CatalogoIntegrationHandler>();
 
 builder.Services.AddControllers();
 
