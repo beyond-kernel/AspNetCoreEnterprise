@@ -7,7 +7,7 @@ using NSE.WebApp.MVC.Services;
 
 namespace NSE.WebApp.MVC.Controllers
 {
-    [Authorize]
+    ////[Authorize]
     public class CarrinhoController : MainController
     {
         private readonly IComprasBffService _comprasBffService;

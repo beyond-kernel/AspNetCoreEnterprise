@@ -8,7 +8,7 @@ using NSE.WebAPI.Core.Controllers;
 
 namespace NSE.Pedidos.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class VoucherController : MainController
     {
         private readonly IVoucherQueries _voucherQueries;

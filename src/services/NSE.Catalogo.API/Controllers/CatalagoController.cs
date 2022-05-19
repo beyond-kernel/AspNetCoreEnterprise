@@ -7,7 +7,7 @@ using NSE.WebAPI.Core.Identidade;
 namespace NSE.Catalogo.API.Controllers
 {
 
-    //[Authorize]
+    ////[Authorize]
     public class CatalogoController : MainController
     {
         private readonly IProdutoRepository _produtoRepository;
@@ -19,9 +19,9 @@ namespace NSE.Catalogo.API.Controllers
         
         [AllowAnonymous]
         [HttpGet("catalogo/produtos")]
-        public async Task<IEnumerable<Produto>> Index()
+        public async Task<PagedResult<Produto>> Index([FromQuery] int ps = 8, [FromQuery] int page = 1, [FromQuery] string q = null)
         {
-            return await _produtoRepository.ObterTodos();
+            return await _produtoRepository.ObterTodos(ps, page, q);
         }
 
         //[ClaimsAuthorize("Catalogo", "Ler")]

@@ -9,7 +9,7 @@ using NSE.WebAPI.Core.Usuario;
 
 namespace NSE.Pedidos.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class PedidoController : MainController
     {
         private readonly IMediatorHandler _mediator;

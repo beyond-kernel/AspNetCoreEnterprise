@@ -9,7 +9,7 @@ using NSE.WebAPI.Core.Controllers;
 
 namespace NSE.Bff.Compras.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class CarrinhoController : MainController
     {
         private readonly IComprasBffService _ComprasBffService;

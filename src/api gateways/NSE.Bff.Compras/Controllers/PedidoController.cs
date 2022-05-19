@@ -10,7 +10,7 @@ using NSE.WebAPI.Core.Controllers;
 
 namespace NSE.Bff.Compras.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class PedidoController : MainController
     {
         private readonly ICatalogoService _catalogoService;
