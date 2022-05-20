@@ -19,7 +19,7 @@ namespace NSE.Catalogo.API.Data.Repository
 
         public IUnitOfWork UnitOfWork => _context;
 
-        public async Task<PagedResult<Produto>> ObterTodos(int pageSize, int pageIndex, string query = null)
+        public async Task<PagedResult<Produto>> ObterTodos(int pageSize, int pageIndex, string? query = null)
         {
             //return await _context.Produtos.AsNoTracking().ToListAsync();
             var sql = @$"SELECT * FROM Produtos 
