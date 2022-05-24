@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using NetDevPack.Security.Jwt.Core.Interfaces;
 using NSE.Core.Messages.Integration;
 using NSE.Identidade.API.Models;
 using NSE.MessageBus;
 using NSE.WebAPI.Core.Controllers;
 using NSE.WebAPI.Core.Identidade;
+using NSE.WebAPI.Core.Usuario;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -20,13 +22,17 @@ namespace NSE.Identidade.API.Controllers
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly AppSettings _appSettings;
         private readonly IMessageBus _bus;
+        private readonly IAspNetUser _aspNetUser;
+        private readonly IJsonWebKeySetService _jwksService;
 
-        public AuthController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, AppSettings appSettings, IMessageBus bus)
+        public AuthController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, AppSettings appSettings, IMessageBus bus, IAspNetUser aspNetUser, IJsonWebKeySetService jwksService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _appSettings = appSettings;
             _bus = bus;
+            _aspNetUser = aspNetUser;
+            _jwksService = jwksService;
         }
 
         [HttpPost("nova-conta")]
@@ -139,15 +145,19 @@ namespace NSE.Identidade.API.Controllers
         {
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes(string.IsNullOrEmpty(_appSettings?.Secret) ? "MYSUPERMEGAHIDDENSECRETKEY" : _appSettings?.Secret);
+            //var key = Encoding.UTF8.GetBytes(string.IsNullOrEmpty(_appSettings?.Secret) ? "MYSUPERMEGAHIDDENSECRETKEY" : _appSettings?.Secret);
+            var key = _jwksService.GetCurrentSecurityKey();
+
+            var currentIssuer = $"{_aspNetUser.ObterHttpContext().Request.Scheme}://{_aspNetUser.ObterHttpContext().Request.Host}";
 
             var token = tokenHandler.CreateToken(new SecurityTokenDescriptor
             {
-                Issuer =   string.IsNullOrEmpty(_appSettings.Emissor) ? "NerdStoreEnterprise" : _appSettings.Emissor,
-                Audience = string.IsNullOrEmpty(_appSettings.ValidoEm) ? "https://localhost" : _appSettings.ValidoEm,
+                Issuer =   string.IsNullOrEmpty(currentIssuer) ? "NerdStoreEnterprise" : currentIssuer,
+                //Audience = string.IsNullOrEmpty(_appSettings.ValidoEm) ? "https://localhost" : _appSettings.ValidoEm,
                 Subject = identityClaims,
                 Expires = DateTime.UtcNow.AddHours(_appSettings.ExpiracaoHoras > 0 ? _appSettings.ExpiracaoHoras : 2),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                //SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(key.Result, SecurityAlgorithms.HmacSha256Signature)
             });
 
             return tokenHandler.WriteToken(token);

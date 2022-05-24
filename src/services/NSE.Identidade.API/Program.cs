@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using NSE.Identidade.API.Configuration;
 using NSE.Identidade.API.Data;
 using NSE.MessageBus;
@@ -19,7 +18,7 @@ if (builder.Environment.IsDevelopment())
 {
     builder.Configuration.AddUserSecrets<Program>();
 }
-
+builder.Services.AddJwksManager().PersistKeysToDatabaseStore<ApplicationDbContext>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -86,5 +85,7 @@ app.UseApiConfiguration(app.Environment);
 app.UseAuthConfiguration();
 
 app.MapControllers();
+
+app.UseJwksDiscovery();
 
 app.Run();
