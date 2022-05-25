@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using NetDevPack.Security.Jwt.Core.Interfaces;
 using NSE.Core.Messages.Integration;
+using NSE.Identidade.API.Data;
 using NSE.Identidade.API.Models;
 using NSE.MessageBus;
 using NSE.WebAPI.Core.Controllers;
@@ -20,12 +22,14 @@ namespace NSE.Identidade.API.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly AppTokenSettings _appTokenSettings;
         private readonly AppSettings _appSettings;
         private readonly IMessageBus _bus;
         private readonly IAspNetUser _aspNetUser;
         private readonly IJsonWebKeySetService _jwksService;
+        private readonly ApplicationDbContext _context;
 
-        public AuthController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, AppSettings appSettings, IMessageBus bus, IAspNetUser aspNetUser, IJsonWebKeySetService jwksService)
+        public AuthController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, AppSettings appSettings, IMessageBus bus, IAspNetUser aspNetUser, IJsonWebKeySetService jwksService, AppTokenSettings appTokenSettings, ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -33,6 +37,8 @@ namespace NSE.Identidade.API.Controllers
             _bus = bus;
             _aspNetUser = aspNetUser;
             _jwksService = jwksService;
+            _appTokenSettings = appTokenSettings;
+            _context = context;
         }
 
         [HttpPost("nova-conta")]
@@ -113,6 +119,26 @@ namespace NSE.Identidade.API.Controllers
             return CustomResponse();
         }
 
+        [HttpPost("refresh-token")]
+        public async Task<ActionResult> RefreshToken([FromBody] string refreshToken)
+        {
+            if (string.IsNullOrEmpty(refreshToken))
+            {
+                AdicionarErroProcessamento("Refresh Token inválido");
+                return CustomResponse();
+            }
+
+            var token = await ObterRefreshToken(Guid.Parse(refreshToken));
+
+            if (token is null)
+            {
+                AdicionarErroProcessamento("Refresh Token expirado");
+                return CustomResponse();
+            }
+
+            return CustomResponse(await GerarJwt(token.Username));
+        }
+
         private async Task<UsuarioRespostaLogin> GerarJwt(string email)
         {
             var user = await _userManager.FindByNameAsync(email);
@@ -121,15 +147,18 @@ namespace NSE.Identidade.API.Controllers
             var identityClaims = await ObterClaimsUsuarios(user, claims);
             var encodedToken = CodificarToken(identityClaims);
 
-            return ObterRespostaToken(encodedToken, user, claims);
+            var refreshToken = GerarRefreshToken(email);
+
+            return ObterRespostaToken(encodedToken, user, claims, refreshToken.Result);
         }
 
-        private UsuarioRespostaLogin ObterRespostaToken(string encodedToken, IdentityUser user, IList<Claim> claims)
+        private UsuarioRespostaLogin ObterRespostaToken(string encodedToken, IdentityUser user, IList<Claim> claims, RefreshToken refreshToken)
         {
             var response = new UsuarioRespostaLogin
             {
                 AccessToken = encodedToken,
-                ExpiresIn = TimeSpan.FromHours(_appSettings.ExpiracaoHoras).TotalSeconds,
+                RefreshToken = refreshToken.Token,
+                ExpiresIn = TimeSpan.FromHours(2).TotalSeconds,
                 UsuarioToken = new UsuarioToken
                 {
                     Id = user.Id,
@@ -152,10 +181,10 @@ namespace NSE.Identidade.API.Controllers
 
             var token = tokenHandler.CreateToken(new SecurityTokenDescriptor
             {
-                Issuer =   string.IsNullOrEmpty(currentIssuer) ? "NerdStoreEnterprise" : currentIssuer,
+                Issuer = string.IsNullOrEmpty(currentIssuer) ? "NerdStoreEnterprise" : currentIssuer,
                 //Audience = string.IsNullOrEmpty(_appSettings.ValidoEm) ? "https://localhost" : _appSettings.ValidoEm,
                 Subject = identityClaims,
-                Expires = DateTime.UtcNow.AddHours(_appSettings.ExpiracaoHoras > 0 ? _appSettings.ExpiracaoHoras : 2),
+                Expires = DateTime.UtcNow.AddHours(2),
                 //SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                 SigningCredentials = new SigningCredentials(key.Result, SecurityAlgorithms.HmacSha256Signature)
             });
@@ -187,5 +216,31 @@ namespace NSE.Identidade.API.Controllers
         }
 
         private static long ToUnixEpochDate(DateTime date) => (long)Math.Round((date.ToUniversalTime() - new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)).TotalSeconds);
+
+        private async Task<RefreshToken> GerarRefreshToken(string email)
+        {
+            var refreshToken = new RefreshToken
+            {
+                Username = email,
+                ExpirationDate = DateTime.UtcNow.AddHours(_appTokenSettings.RefreshTokenExpiration)
+            };
+
+            _context.RefreshTokens.RemoveRange(_context.RefreshTokens.Where(u => u.Username == email));
+            await _context.RefreshTokens.AddAsync(refreshToken);
+
+            await _context.SaveChangesAsync();
+
+            return refreshToken;
+        }
+
+        public async Task<RefreshToken> ObterRefreshToken(Guid refreshToken)
+        {
+            var token = await _context.RefreshTokens.AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Token == refreshToken);
+
+            return token != null && token.ExpirationDate.ToLocalTime() > DateTime.Now
+                ? token
+                : null;
+        }
     }
 }

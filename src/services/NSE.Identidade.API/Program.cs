@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NSE.Identidade.API.Configuration;
 using NSE.Identidade.API.Data;
+using NSE.Identidade.API.Models;
 using NSE.MessageBus;
 using NSE.WebAPI.Core.Identidade;
 using System.Text;
@@ -28,7 +29,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>()
     .AddDefaultTokenProviders();
 
 
-builder.Services.AddJwtConfiguration(builder.Configuration);
+//builder.Services.AddJwtConfiguration(builder.Configuration);
 
 //var appSettingsSection = builder.Configuration.GetSection("AppSettings");
 //builder.Services.Configure<AppSettings>(appSettingsSection);
@@ -59,6 +60,9 @@ builder.Services.AddJwtConfiguration(builder.Configuration);
 builder.Services.AddApiConfiguration();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
+var appSettingsSection = builder.Configuration.GetSection("AppTokenSettings");
+builder.Services.Configure<AppTokenSettings>(appSettingsSection);
 
 
 builder.Services.AddMessageBus("amqp://guest:guest@rabbit-host:5672/%2ffilestream;publisherConfirms=true;timeout=10");
