@@ -119,7 +119,7 @@ builder.Services.AddSwaggerGen(c =>
     {
         Title = "NerdStore Enterprise Pedidos API",
         Description = "Esta API faz parte do curso ASP.NET Core Enterprise Applications.",
-        Contact = new OpenApiContact() { Name = "Eduardo Pires", Email = "contato@desenvolvedor.io" },
+        Contact = new OpenApiContact() { Name = "Rafael" },
         License = new OpenApiLicense() { Name = "MIT", Url = new Uri("https://opensource.org/licenses/MIT") }
     });
 

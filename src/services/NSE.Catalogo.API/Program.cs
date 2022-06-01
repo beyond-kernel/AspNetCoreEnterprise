@@ -39,14 +39,13 @@ builder.Services.AddCors(opt => { opt.AddPolicy("Total", builder => builder.Allo
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    c.SwaggerDoc("v1", new OpenApiInfo()
     {
-        Title = "NerdStore Enterprise Catalogo API",
-        Description = "Essa API retorna os produtos na aplicação",
-        Contact = new Microsoft.OpenApi.Models.OpenApiContact() { Name = "Rafael", Url = new Uri("https://opensource.org/license/MIT") },
-        License = new Microsoft.OpenApi.Models.OpenApiLicense() { Name = "MIT", Url = new Uri("https://opensource.org/license/MIT") }
+        Title = "NerdStore Enterprise Pedidos API",
+        Description = "Esta API faz parte do curso ASP.NET Core Enterprise Applications.",
+        Contact = new OpenApiContact() { Name = "Rafael" },
+        License = new OpenApiLicense() { Name = "MIT", Url = new Uri("https://opensource.org/licenses/MIT") }
     });
-
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
@@ -72,7 +71,9 @@ builder.Services.AddSwaggerGen(c =>
                         new string[] {}
                     }
                 });
+
 });
+
 
 
 var app = builder.Build();
@@ -81,7 +82,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1"); });
 }
 
 app.UseApiConfiguration(app.Environment);

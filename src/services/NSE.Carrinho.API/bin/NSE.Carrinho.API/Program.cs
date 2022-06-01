@@ -3,6 +3,7 @@ using Microsoft.OpenApi.Models;
 using NSE.Carrinho.API.Configuration;
 using NSE.Carrinho.API.Data;
 using NSE.Carrinho.API.Services;
+using NSE.Carrinho.API.Services.gRPC;
 using NSE.MessageBus;
 using NSE.WebAPI.Core.Identidade;
 using NSE.WebAPI.Core.Usuario;
@@ -20,6 +21,8 @@ if (builder.Environment.IsDevelopment())
 }
 
 builder.Services.AddDbContext<CarrinhoContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddGrpc();
 
 builder.Services.AddCors(options =>
 {
@@ -112,4 +115,5 @@ app.UseAuthConfiguration();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
+    endpoints.MapGrpcService<CarrinhoGrpcService>().RequireCors("Total");
 });

@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="10.4.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.46.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="6.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.4">
@@ -33,5 +34,9 @@
     <ProjectReference Include="..\..\..\NSE.Identidade.API\NSE.Identidade.API.csproj" />
     <ProjectReference Include="..\..\..\NSE.Pedido.API\NSE.Pedidos.API.csproj" />
   </ItemGroup>
+
+	<ItemGroup>
+		<Protobuf Include="Protos\carrinho.proto" GrpcServices="Server" />
+	</ItemGroup>
 
 </Project>

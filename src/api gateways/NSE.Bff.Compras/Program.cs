@@ -4,6 +4,7 @@ using Microsoft.OpenApi.Models;
 using NSE.Bff.Compras.Configuration;
 using NSE.Bff.Compras.Extensions;
 using NSE.Bff.Compras.Services;
+using NSE.Bff.Compras.Services.gRPC;
 using NSE.WebAPI.Core.Extensions;
 using NSE.WebAPI.Core.Identidade;
 using NSE.WebAPI.Core.Usuario;
@@ -43,11 +44,18 @@ builder.Services.AddHttpClient<IClienteService, ClienteService>()
     .AddTransientHttpErrorPolicy(
         p => p.CircuitBreakerAsync(5, TimeSpan.FromSeconds(30)));
 
+builder.Services.AddScoped<ICarrinhoGrpcService, CarrinhoGrpcService>();
+
+builder.Services.AddSingleton<GrpcServiceInterceptor>();
+
+builder.Services.AddGrpcClient<NSE.Carrinho.API.Services.gRPC.CarrinhoCompras.CarrinhoComprasClient>(
+    opt => { opt.Address = new Uri("https://localhost:49153"); }).AddInterceptor<GrpcServiceInterceptor>();
 
 builder.Configuration.SetBasePath(builder.Environment.ContentRootPath)
     .AddJsonFile("appsettings.json", true, true)
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", true, true)
     .AddEnvironmentVariables();
+
 
 // Add services to the container.
 
