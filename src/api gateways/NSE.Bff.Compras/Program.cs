@@ -108,6 +108,8 @@ builder.Services.AddSwaggerGen(c =>
                         new string[] {}
                     }
                 });
+
+    c.CustomSchemaIds(type => type.ToString());
 });
 
 
@@ -117,7 +119,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1"); });
 }
 
 app.UseApiConfiguration(app.Environment);

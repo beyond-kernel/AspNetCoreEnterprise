@@ -128,7 +128,7 @@ namespace NSE.Identidade.API.Controllers
                 return CustomResponse();
             }
 
-            var token = await ObterRefreshToken(Guid.Parse(refreshToken));
+            RefreshToken? token = await ObterRefreshToken(refreshToken);
 
             if (token is null)
             {
@@ -137,6 +137,17 @@ namespace NSE.Identidade.API.Controllers
             }
 
             return CustomResponse(await GerarJwt(token.Username));
+        }
+
+        private async Task<RefreshToken> ObterRefreshToken(string refreshToken)
+        {
+            var token = await _context.RefreshTokens.AsNoTracking()
+           .FirstOrDefaultAsync(u => u.Token == Guid.Parse(refreshToken));
+
+            token = token != null && token.ExpirationDate.ToLocalTime() > DateTime.Now
+               ? token
+               : null;
+            return token;
         }
 
         private async Task<UsuarioRespostaLogin> GerarJwt(string email)
@@ -233,14 +244,14 @@ namespace NSE.Identidade.API.Controllers
             return refreshToken;
         }
 
-        public async Task<RefreshToken> ObterRefreshToken(Guid refreshToken)
-        {
-            var token = await _context.RefreshTokens.AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Token == refreshToken);
+        //public async Task<RefreshToken> ObterRefreshToken(Guid refreshToken)
+        //{
+        //    var token = await _context.RefreshTokens.AsNoTracking()
+        //        .FirstOrDefaultAsync(u => u.Token == refreshToken);
 
-            return token != null && token.ExpirationDate.ToLocalTime() > DateTime.Now
-                ? token
-                : null;
-        }
+        //    return token != null && token.ExpirationDate.ToLocalTime() > DateTime.Now
+        //        ? token
+        //        : null;
+        //}
     }
 }
