@@ -40,7 +40,7 @@ namespace NSE.Pedidos.API.Application.Commands
             {
                 RuleFor(c => c.ClienteId)
                     .NotEqual(Guid.Empty)
-                    .WithMessage("Id do cliente inválido");
+                    .WithMessage("Id do cliente inválido"); 
 
                 RuleFor(c => c.PedidoItems.Count)
                     .GreaterThan(0)
