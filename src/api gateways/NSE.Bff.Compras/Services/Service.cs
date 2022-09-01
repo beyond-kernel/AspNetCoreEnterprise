@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using static NSE.WebAPI.Core.Controllers.MainController;
 
 namespace NSE.Bff.Compras.Services
-{
+{ 
     public abstract class Service
     {
         protected StringContent ObterConteudo(object dado)

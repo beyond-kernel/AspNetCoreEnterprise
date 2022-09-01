@@ -15,7 +15,7 @@ namespace NSE.Bff.Compras.Configuration
         public static IApplicationBuilder UseApiConfiguration(this IApplicationBuilder app, IWebHostEnvironment env)
         {
             //app.UseHttpsRedirection();
-
+             
             app.UseAuthConfiguration();
 
             app.UseAuthentication();
