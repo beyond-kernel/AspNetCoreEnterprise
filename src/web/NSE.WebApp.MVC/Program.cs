@@ -14,7 +14,7 @@ builder.Configuration.SetBasePath(builder.Environment.ContentRootPath)
 builder.Services.AddIdentityConfiguration();
 builder.Services.AddControllersWithViews();
 builder.Services.Configure<AppSettings>(builder.Configuration);
-builder.Services.RegisterServices();
+builder.Services.RegisterServices(); 
 builder.Services.AddScoped<ICatalogoService, CatalogoService>();
 builder.Services.AddScoped<IComprasBffService, ComprasBffService>();
 
